@@ -48,7 +48,7 @@ let init = () =>{
       var modelViewMatrix = mat4.create();
       mat4.translate(modelViewMatrix,     // destination matrix
         modelViewMatrix,     // matrix to translate
-        [0.0, 0.0, -6.0]);  // amount to translate
+        [0.0, 0.0, -2.0]);  // amount to translate
       mat4.rotate(modelViewMatrix,
       modelViewMatrix,
       0,
@@ -98,7 +98,7 @@ let init = () =>{
           programInfo.uniformLocations.modelViewMatrix,
           false,
           modelViewMatrix); 
-      gl.drawElements(gl.TRIANGLES, 36*4, gl.UNSIGNED_SHORT, 0);
+      gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0);
         // console.log("returned new gl")
       return gl;
   };
