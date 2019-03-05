@@ -13,7 +13,7 @@ function Track(gl,x,y,z) {
     'o':1,
   };
   for(var i =0 ; i < 3; i++){
-    tracks.push(Basic(gl, 0+i*6, 0, -6, col,0.5 ,1 ,0.25))
+    tracks.push(Basic(gl, x+i, y, z, col,0.25 ,0.5 ,0.12))
   }
   let init = () =>{
     tracks.forEach(track => {

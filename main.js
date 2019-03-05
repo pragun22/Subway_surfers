@@ -3,11 +3,11 @@ const canvas = document.querySelector('#glcanvas');
 const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 const player = Player(gl,0,0,0);
 const tracks = Track(gl,0,0,-6);
-var target = [0, 0,-6]
-var eye = [0, 0, -9];
+var target = [tracks.location[0], tracks.location[1], tracks.location[2]]
+var eye = [tracks.location[0], tracks.location[1]+3, tracks.location[2] - 6];
 const textures = {
       lightwood: loadTexture(gl, 'lightwood.jpeg'),
-      rail: loadTexture(gl,'rail.jpg'),
+      rail: loadTexture(gl,'rail1.jpg'),
 };
 main();
 function main() {
