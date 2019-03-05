@@ -1,4 +1,4 @@
-function Player(gl,x,y,z) {
+function Basic(gl,x,y,z,col,len,wid,hgt) {
   var location = [x,y,z]
   const positionBuffer = gl.createBuffer();
   const indexBuffer = gl.createBuffer();  
@@ -8,62 +8,19 @@ function Player(gl,x,y,z) {
 let init = () =>{
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
   const positions = [
-  //main body
-    -1,-1,0,  //0
-    1,-1,0, // 1
-    1,1,0, // 2
-    -1,1,0, // 3
-    
-    -1,-1,1, // 4
-    1,-1,1, // 5
-    1,1,1, // 6
-    -1,1,1, // 7
-
-    //head
-    -0.5,1,0, //8
-    0.5,1,0, //9 
-    0.5,1.5,0, //10
-    -0.5,1.5,0, //11
-
-    -0.5,1,1, //12
-    0.5,1,1, //13
-    0.5,1.5,1, // 14
-    -0.5,1.5,1, //15
-
-    //legs
-    -1,-1.5,0, //16
-    -1.0/8.0,-1.5,0, //17
-    -1.0/8.0,-1,0, //18
-    -1,-1,0, //19
-
-    -1,-1.5,1, //24
-    -1.0/8.0,-1.5,1, //25
-    -1.0/8.0,-1,1, //26
-    -1,-1,1, //27
-
-    1.0/8.0,-1.5,0, //20
-    1,-1.5,0, //21
-    1,-1,0, //22
-    1.0/8.0,-1,0, //23
-
-    1.0/8.0,-1.5,1, //28
-    1,-1.5,1, //29
-    1,-1,1, //30
-    1.0/8.0,-1,1, //31
-    ];
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+    -len,-hgt,-wid,
+    len,-hgt,-wid,
+    len,hgt,-wid,
+    -len,hgt,-wid,
+    -len,-hgt,wid,
+    len,-hgt,wid,
+    len,hgt,wid,
+    -len,hgt,wid 
+  ];    
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
     const faceColors = [
-      [1.0,  0.69,  0.39,  1.0],    
-      [1.0,  0.69,  0.39,  1.0], // body sandy    
-
-      [0.69,  0.0,  0.46,  1.0],    
-      [0.69,  0.0,  0.46,  1.0], //head purples   
-      
-      [0.69,  0.0,  0.0,  1.0],    
-      [0.69,  0.0,  0.0,  1.0],    
-
-      [0.69,  0.0,  0.0,  1.0],    
-      [0.69,  0.0,  0.0,  1.0],    // legs
+      [col.r,  col.g,  col.b,  col.o],    
+      [col.r,  col.g,  col.b,  col.o], // body sandy    
     ];
     var colors = [];
     for (var j = 0; j < faceColors.length; ++j) {
@@ -74,18 +31,16 @@ let init = () =>{
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
     var indices = [];
-    for(var i=0;i<4*8;i+=8){
-      indices.push(
-        0+i,1+i,2+i,  0+i,3+i,2+i,
-        4+i,5+i,6+i, 4+i,7+i,6+i,
-    
-        0+i,4+i,5+i, 0+i,1+i,5+i,
-        7+i,3+i,6+i, 3+i,6+i,2+i,
-    
-        0+i,4+i,7+i, 3+i,7+i,0+i,
-        1+i,5+i,6+i, 6+i,2+i,1+i,  
-      );
-    }
+    indices.push(
+      0,1,2, 0,3,2,
+      4,5,6, 4,7,6,
+  
+      0,4,5, 0,1,5,
+      7,3,6, 3,6,2,
+  
+      0,4,7, 3,7,0,
+      1,5,6, 6,2,1,  
+    );
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,
         new Uint16Array(indices), gl.STATIC_DRAW);
 };
