@@ -10,9 +10,10 @@ function Track(gl,x,y,z) {
     'r':0.56,
     'g':0.56,
     'b':0.56,
+    'o':1,
   };
   for(var i =0 ; i < 3; i++){
-    tracks.push(Basic(gl, 0+i*6, 0, -6, col,4 ,10 ,2))
+    tracks.push(Basic(gl, 0+i*6, 0, -6, col,0.5 ,1 ,0.25))
   }
   let init = () =>{
     tracks.forEach(track => {

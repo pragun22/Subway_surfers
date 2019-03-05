@@ -2,7 +2,7 @@
 const canvas = document.querySelector('#glcanvas');
 const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 const player = Player(gl,0,0,0);
-const tracks = Track(gl,0,0,0);
+const tracks = Track(gl,0,0,-6);
 var target = [player.location[0], player.location[1] - 4 + 0.1,
         player.location[2] - 4 / 3
     ]

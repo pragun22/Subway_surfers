@@ -20,7 +20,7 @@ let init = () =>{
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
     const faceColors = [
       [col.r,  col.g,  col.b,  col.o],    
-      [col.r,  col.g,  col.b,  col.o], // body sandy    
+      [col.r,  col.g,  col.b,  col.o],     
     ];
     var colors = [];
     for (var j = 0; j < faceColors.length; ++j) {
@@ -99,7 +99,7 @@ let init = () =>{
           false,
           modelViewMatrix); 
       gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0);
-        // console.log("returned new gl")
+        console.log("made basic obj")
       return gl;
   };
 
