@@ -20,7 +20,7 @@ function Track(gl,x,y,z) {
       track.init();
     });
   };
-  let draw = (gl,VP,projectionMatrix, programInfo) =>{
+  let draw = (gl,VP,projectionMatrix, programInfo,texture) =>{
       var modelViewMatrix = mat4.create();
       mat4.translate(modelViewMatrix,     // destination matrix
         modelViewMatrix,     // matrix to translate
@@ -31,13 +31,15 @@ function Track(gl,x,y,z) {
       [1, 1, 0]);
       mat4.multiply(modelViewMatrix,modelViewMatrix,VP);
       tracks.forEach( track => {
-        gl = track.draw(gl,VP,projectionMatrix,programInfo);
+        gl = track.draw(gl,VP,projectionMatrix,programInfo,texture);
       });
       return gl;
   };
 
   let tick = () => {
-    cubeRotation += 0.01
+    tracks.forEach( track => {
+      track.tick();
+    });
   };
   return {
     location: location,

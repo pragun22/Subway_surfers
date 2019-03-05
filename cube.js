@@ -3,7 +3,8 @@ function Player(gl,x,y,z) {
   const positionBuffer = gl.createBuffer();
   const indexBuffer = gl.createBuffer();  
 	const colorBuffer = gl.createBuffer();
-	const normalBuffer = gl.createBuffer();
+  const normalBuffer = gl.createBuffer();
+  var rotation_ob = 0
 	const textureCoordBuffer = gl.createBuffer();
 let init = () =>{
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -88,15 +89,98 @@ let init = () =>{
     }
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,
         new Uint16Array(indices), gl.STATIC_DRAW);
+        gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
+    var textureCoordinates = []
+    for(var i = 0 ; i < 4; i++){
+      textureCoordinates.push( 
+        // Front
+        0.0, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 1.0,
+        // Back
+        0.0, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 1.0,
+        // Top
+        0.0, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 1.0,
+        // Bottom
+        0.0, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 1.0,
+        // Right
+        0.0, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 1.0,
+        // Left
+        0.0, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 1.0,
+      );
+    }
+
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates),
+			gl.STATIC_DRAW);
+
+		gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+
+    var vertexNormals = []
+    for(var i = 0 ; i<4 ; i++){
+      vertexNormals.push(
+
+        // Front
+        0.0, 0.0, 1.0,
+        0.0, 0.0, 1.0,
+        0.0, 0.0, 1.0,
+        0.0, 0.0, 1.0,
+  
+        // Back
+        0.0, 0.0, -1.0,
+        0.0, 0.0, -1.0,
+        0.0, 0.0, -1.0,
+        0.0, 0.0, -1.0,
+  
+        // Top
+        0.0, 1.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 1.0, 0.0,
+  
+        // Bottom
+        0.0, -1.0, 0.0,
+        0.0, -1.0, 0.0,
+        0.0, -1.0, 0.0,
+        0.0, -1.0, 0.0,
+  
+        // Right
+        1.0, 0.0, 0.0,
+        1.0, 0.0, 0.0,
+        1.0, 0.0, 0.0,
+        1.0, 0.0, 0.0,
+  
+        // Left
+        -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0
+      );
+    }
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals),
+			gl.STATIC_DRAW);
+
 };
-  let draw = (gl,VP,projectionMatrix, programInfo) =>{
+  let draw = (gl,VP,projectionMatrix, programInfo,textures) =>{
       var modelViewMatrix = mat4.create();
       mat4.translate(modelViewMatrix,     // destination matrix
         modelViewMatrix,     // matrix to translate
         [0.0, 0.0, -6.0]);  // amount to translate
       mat4.rotate(modelViewMatrix,
       modelViewMatrix,
-      0,
+      rotation_ob,
       [1, 1, 0]);
       mat4.multiply(modelViewMatrix,modelViewMatrix,VP);
       {
@@ -116,25 +200,19 @@ let init = () =>{
         gl.enableVertexAttribArray(
             programInfo.attribLocations.vertexPosition);
       }
-      {
-        const numComponents = 4;
-        const type = gl.FLOAT;
-        const normalize = false;
-        const stride = 0;
-        const offset = 0;
-        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-        gl.vertexAttribPointer(
-            programInfo.attribLocations.vertexColor,
-            numComponents,
-            type,
-            normalize,
-            stride,
-            offset);
-        gl.enableVertexAttribArray(
-            programInfo.attribLocations.vertexColor);
-      }
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+      gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
+  		gl.vertexAttribPointer(programInfo.attribLocations.textureCoord, 2, gl.FLOAT, false, 0, 0);
+  		gl.enableVertexAttribArray(programInfo.attribLocations.textureCoord);
       gl.useProgram(programInfo.program);
+      const normalMatrix = mat4.create();
+	  	mat4.invert(normalMatrix, modelViewMatrix);
+      mat4.transpose(normalMatrix, normalMatrix);
+      
+      gl.uniformMatrix4fv(
+        programInfo.uniformLocations.normalMatrix, 
+        false, 
+        normalMatrix);
       gl.uniformMatrix4fv(
           programInfo.uniformLocations.projectionMatrix,
           false,
@@ -143,13 +221,35 @@ let init = () =>{
           programInfo.uniformLocations.modelViewMatrix,
           false,
           modelViewMatrix); 
+
+    gl.activeTexture(gl.TEXTURE0);
+		let bind_texture = textures.lightwood;
+		gl.bindTexture(gl.TEXTURE_2D, bind_texture);
+		gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
+		{
+			const numComponents = 3;
+			const type = gl.FLOAT;
+			const normalize = false;
+			const stride = 0;
+			const offset = 0;
+			gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+			gl.vertexAttribPointer(
+				programInfo.attribLocations.vertexNormal,
+				numComponents,
+				type,
+				normalize,
+				stride,
+				offset);
+			gl.enableVertexAttribArray(
+				programInfo.attribLocations.vertexNormal);
+		}    
       gl.drawElements(gl.TRIANGLES, 36*4, gl.UNSIGNED_SHORT, 0);
         // console.log("returned new gl")
       return gl;
   };
 
   let tick = () => {
-    cubeRotation += 0.01
+    rotation_ob += 0.01
   };
   return {
     location: location,
