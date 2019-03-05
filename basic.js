@@ -20,40 +20,40 @@ let init = () =>{
   // ];  
   const positions = [
     // Front face
-    -1.0, -1.0,  1.0,
-     1.0, -1.0,  1.0,
-     1.0,  1.0,  1.0,
-    -1.0,  1.0,  1.0,
+    -len, -hgt,  wid,
+     len, -hgt,  wid,
+     len,  hgt,  wid,
+    -len,  hgt,  wid,
 
     // Back face
-    -1.0, -1.0, -1.0,
-    -1.0,  1.0, -1.0,
-     1.0,  1.0, -1.0,
-     1.0, -1.0, -1.0,
+    -len, -hgt, -wid,
+    -len,  hgt, -wid,
+     len,  hgt, -wid,
+     len, -hgt, -wid,
 
     // Top face
-    -1.0,  1.0, -1.0,
-    -1.0,  1.0,  1.0,
-     1.0,  1.0,  1.0,
-     1.0,  1.0, -1.0,
+    -len,  hgt, -wid,
+    -len,  hgt,  wid,
+     len,  hgt,  wid,
+     len,  hgt, -wid,
 
     // Bottom face
-    -1.0, -1.0, -1.0,
-     1.0, -1.0, -1.0,
-     1.0, -1.0,  1.0,
-    -1.0, -1.0,  1.0,
+    -len, -hgt, -wid,
+     len, -hgt, -wid,
+     len, -hgt,  wid,
+    -len, -hgt,  wid,
 
     // Right face
-     1.0, -1.0, -1.0,
-     1.0,  1.0, -1.0,
-     1.0,  1.0,  1.0,
-     1.0, -1.0,  1.0,
+     len, -hgt, -wid,
+     len,  hgt, -wid,
+     len,  hgt,  wid,
+     len, -hgt,  wid,
 
     // Left face
-    -1.0, -1.0, -1.0,
-    -1.0, -1.0,  1.0,
-    -1.0,  1.0,  1.0,
-    -1.0,  1.0, -1.0,
+    -len, -hgt, -wid,
+    -len, -hgt,  wid,
+    -len,  hgt,  wid,
+    -len,  hgt, -wid,
   ];  
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
     const faceColors = [
@@ -98,9 +98,9 @@ let init = () =>{
           0.0, 0.0,
           // Back
           0.0, 0.0,
-          1.0, 0.0,
-          1.0, 1.0,
-          0.0, 1.0,
+          0.0, 0.0,
+          0.0, 0.0,
+          0.0, 0.0,
           // Top
           0.0, 0.0,
           1.0, 0.0,
@@ -108,19 +108,19 @@ let init = () =>{
           0.0, 1.0,
           // Bottom
           0.0, 0.0,
-          1.0, 0.0,
-          1.0, 1.0,
-          0.0, 1.0,
+          0.0, 0.0,
+          0.0, 0.0,
+          0.0, 0.0,
           // Right
           0.0, 0.0,
-          1.0, 0.0,
-          1.0, 1.0,
-          0.0, 1.0,
+          0.0, 0.0,
+          0.0, 0.0,
+          0.0, 0.0,
           // Left
           0.0, 0.0,
-          1.0, 0.0,
-          1.0, 1.0,
-          0.0, 1.0,
+          0.0, 0.0,
+          0.0, 0.0,
+          0.0, 0.0,
         ];
     
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates),
