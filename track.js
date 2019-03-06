@@ -1,5 +1,5 @@
 function Track(gl,x,y,z) {
-  var location = [0,0,0]
+  var location = [x,y,z]
   const positionBuffer = gl.createBuffer();
   const indexBuffer = gl.createBuffer();  
 	const colorBuffer = gl.createBuffer();
@@ -13,7 +13,7 @@ function Track(gl,x,y,z) {
     'o':1,
   };
   for(var i =0 ; i < 3; i++){
-    tracks.push(Basic(gl, x+i*0.55, 0, 0,0.25 ,2.5 ,0.12))
+    tracks.push(Basic(gl, x+i*0.55, 0, 0,0.25 ,6.5 ,0.12))
   }
   let init = () =>{
     tracks.forEach(track => {
@@ -23,10 +23,10 @@ function Track(gl,x,y,z) {
   let draw = (gl,VP,projectionMatrix, programInfo,texture) =>{
       var modelViewMatrix = mat4.create();
       mat4.multiply(modelViewMatrix,modelViewMatrix,VP);
-      trans = [location[0]+x,location[1]+y,location[2]+z]
+      // trans = [location[0]+x,location[1]+y,location[2]+z]
       mat4.translate(modelViewMatrix,     // destination matrix
         modelViewMatrix,     // matrix to translate
-        trans);  // amount to translate
+        location);  // amount to translate
       // mat4.rotate(modelViewMatrix,
       // modelViewMatrix,
       // 0,

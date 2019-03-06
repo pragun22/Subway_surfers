@@ -84,12 +84,15 @@ function main() {
     });
     var then = 0;
     function render(now) {
+      eye[2]+=0.05      
+      target[2]+=0.05;
+      player.location[2] += 0.05;
       Mousetrap.bind(["left", "a"], () => {
-      // console.log("check2")
-          player.location[0]+=0.5
+        // console.log("check2")
+        player.location[0]+=0.5
       });
       Mousetrap.bind(["d", "right"], () => {
-      // console.log("check1")        
+        // console.log("check1")        
         player.location[0]-=0.5          
       });
       Mousetrap.bind(["w"], () => {
@@ -97,15 +100,19 @@ function main() {
         eye[2]+=0.05      
         target[2]+=0.05;
         player.location[2] += 0.05;
+        // tracks[0].location[2] -= 0.05;
         // Player.reset(eye[2]);
-        });
+      });
       Mousetrap.bind(["s"], () => {
         // console.log("check3")        
-          eye[2]-=0.05;
-          target[2]-=0.05;
+        eye[2]-=0.05;
+        target[2]-=0.05;
         player.location[2] -= 0.05;
-          // player.reset(eye[2]);          
-        });
+        // tracks[0].location[2] += 0.05;
+
+        // player.reset(eye[2]);          
+      });
+      tick();
         now *= 0.001;  // convert to seconds
         const deltaTime = now - then;
         then = now;
@@ -116,13 +123,18 @@ function main() {
       requestAnimationFrame(render);
     }
   let tick = () => {
-    if ( player.location[2] - tracks[0][2] > 5 ){
-      tracks.push(gl,0,location[1],location[2]);
+    // console.log(player.location[2])
+    // console.log(tracks[0].location[2])
+    if ( player.location[2] - tracks[0].location[2] > 4 ){
+      console.log(player.location[2]);
+      tracks.push(Track(gl,-0.5,0,player.location[2]+0.8));
+      tracks[1].init()
+      console.log(tracks[0].location[2])
       tracks.shift();
     }
   };
   function drawScene(gl, programInfo, deltaTime) {
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);  // Clear to black, fully opaque
+    gl.clearColor(0.2, 0.5, 0.4, 1.0);  // Clear to black, fully opaque
     gl.clearDepth(1.0);                 // Clear everything
     gl.enable(gl.DEPTH_TEST);           // Enable depth testing
     gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
@@ -131,7 +143,7 @@ function main() {
     const fieldOfView = 60 * Math.PI / 180;   // in radians
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     const zNear = 0.1;
-    const zFar = 2000.0;
+    const zFar = 100.0;
     const projectionMatrix = mat4.create();
     mat4.perspective(projectionMatrix,
                       fieldOfView,
