@@ -2,13 +2,16 @@
 const canvas = document.querySelector('#glcanvas');
 const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 const player = Player(gl,0.55,0.6,-0.2);
-const tracks = Track(gl,0,0,-1);
-var target = [tracks.location[0]-0.5, tracks.location[1], tracks.location[2]]
-var eye = [tracks.location[0]-0.5, tracks.location[1]+1.3, tracks.location[2] - 2];
+var tracks = []
+tracks.push(Track(gl,0,0,-1));
+var target = [player.location[0]-0.5, player.location[1], player.location[2]]
+var eye = [player.location[0]-0.5, player.location[1]+1.3, player.location[2] - 2];
 const textures = {
       lightwood: loadTexture(gl, 'lightwood.jpeg'),
       rail: loadTexture(gl,'rail1.jpg'),
-      colorful: loadTexture(gl,'lego_yellow.jpeg')
+      legyel: loadTexture(gl,'lego_yellow.jpeg'),
+      legbl: loadTexture(gl,'lego_blue.jpeg'),
+      leggr: loadTexture(gl,'lego_green.jpg'),
     };
 main();
 function main() {
@@ -76,7 +79,9 @@ function main() {
     };
 
     player.init();
-    tracks.init();
+    tracks.forEach(track => {
+      track.init();
+    });
     var then = 0;
     function render(now) {
       Mousetrap.bind(["left", "a"], () => {
@@ -87,6 +92,14 @@ function main() {
       console.log("check1")        
         player.location[0]+=0.5          
       });
+      Mousetrap.bind(["w", "upper"], () => {
+        console.log("check3")        
+          player.location[2]+=0.05          
+        });
+      Mousetrap.bind(["s", "upper"], () => {
+        console.log("check3")        
+          player.location[2]+=1.0          
+        });
         now *= 0.001;  // convert to seconds
         const deltaTime = now - then;
         then = now;
@@ -96,7 +109,12 @@ function main() {
       }
       requestAnimationFrame(render);
     }
-  
+  let tick = () => {
+    if ( player.location[2] - tracks[0][2] > 5 ){
+      tracks.push(gl,0,location[1],location[2]);
+      tracks.shift();
+    }
+  };
   function drawScene(gl, programInfo, deltaTime) {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);  // Clear to black, fully opaque
     gl.clearDepth(1.0);                 // Clear everything
@@ -116,12 +134,14 @@ function main() {
                       zFar);
 // Compute a matrix for the camera
     var modelViewMatrix = mat4.create();
-    // console.log(modelViewMatrix);
     mat4.lookAt(modelViewMatrix, eye, target, [0, 1, 0]);
-    gl = player.draw(gl, modelViewMatrix,projectionMatrix, programInfo,textures.colorful);
+    target = [-0.5, player.location[1], player.location[2]]
+    eye = [-0.5, player.location[1]+1.3, player.location[2] - 3];
+    tex = [textures.legyel,textures.legbl,textures.leggr]
+    gl = player.draw(gl, modelViewMatrix,projectionMatrix, programInfo,tex);
     // console.log('player');
-    gl = tracks.draw(gl, modelViewMatrix,projectionMatrix, programInfo,textures.rail);
-    tracks.tick();
+    gl = tracks[0].draw(gl, modelViewMatrix,projectionMatrix, programInfo,textures.rail);
+    tracks[0].tick();
     player.tick();
     // console.log("returned")
 };

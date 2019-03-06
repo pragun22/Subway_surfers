@@ -140,10 +140,10 @@ let init = () =>{
       mat4.translate(modelViewMatrix,     // destination matrix
         modelViewMatrix,     // matrix to translate
         location);  // amount to translate
-      mat4.rotate(modelViewMatrix,
-      modelViewMatrix,
-      obj_rot,
-      [0, 1, 0]);
+      // mat4.rotate(modelViewMatrix,
+      // modelViewMatrix,
+      // obj_rot,
+      // [0, 1, 0]);
       mat4.scale(modelViewMatrix,
         modelViewMatrix,
         scale)
