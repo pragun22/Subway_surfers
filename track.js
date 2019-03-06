@@ -13,7 +13,7 @@ function Track(gl,x,y,z) {
     'o':1,
   };
   for(var i =0 ; i < 3; i++){
-    tracks.push(Basic(gl, x+i*0.55, 0, 0, col,0.25 ,0.5 ,0.12))
+    tracks.push(Basic(gl, x+i*0.55, 0, 0,0.25 ,0.5 ,0.12))
   }
   let init = () =>{
     tracks.forEach(track => {
@@ -32,7 +32,6 @@ function Track(gl,x,y,z) {
       mat4.multiply(modelViewMatrix,modelViewMatrix,VP);
       tracks.forEach( (track,index) => {
         gl = track.draw(gl,VP,projectionMatrix,programInfo,texture);
-        console.log(index);
       });
       return gl;
   };

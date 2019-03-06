@@ -652,7 +652,8 @@ function rotate(out, a, rad) {
  **/
 function scale(out, a, v) {
   var x = v[0],
-      y = v[1];
+      y = v[1],
+      z = v[2];
 
   out[0] = x * a[0];
   out[1] = x * a[1];
@@ -662,9 +663,9 @@ function scale(out, a, v) {
   out[4] = y * a[4];
   out[5] = y * a[5];
 
-  out[6] = a[6];
-  out[7] = a[7];
-  out[8] = a[8];
+  out[6] = z * a[6];
+  out[7] = z * a[7];
+  out[8] = z * a[8];
   return out;
 }
 

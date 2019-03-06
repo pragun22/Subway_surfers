@@ -1,14 +1,14 @@
 
 const canvas = document.querySelector('#glcanvas');
 const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-const player = Player(gl,0,0,-2);
+const player = Player(gl,-0.5,1,-2);
 const tracks = Track(gl,0,0,-1);
-var target = [player.location[0]-0.5, player.location[1], player.location[2]]
-var eye = [player.location[0]-0.5, player.location[1]+1.3, player.location[2] - 2];
+var target = [tracks.location[0]-0.5, tracks.location[1], tracks.location[2]]
+var eye = [tracks.location[0]-0.5, tracks.location[1]+1.3, tracks.location[2] - 2];
 const textures = {
       lightwood: loadTexture(gl, 'lightwood.jpeg'),
       rail: loadTexture(gl,'rail1.jpg'),
-      colorful: loadTexture(gl,'player.jpeg')
+      colorful: loadTexture(gl,'lego_yellow.jpeg')
     };
 main();
 function main() {

@@ -1,4 +1,4 @@
-function Basic(gl,x,y,z,len,wid,hgt) {
+function Basic2(gl,x,y,z,len,wid,hgt) {
   var location = [x,y,z]
   const positionBuffer = gl.createBuffer();
   const indexBuffer = gl.createBuffer();  
@@ -61,34 +61,34 @@ let init = () =>{
         const textureCoordinates = [
           // Front
           0.0, 0.0,
-          0.0, 0.0,
-          0.0, 0.0,
-          0.0, 0.0,
-          // Back
-          0.0, 0.0,
-          0.0, 0.0,
-          0.0, 0.0,
-          0.0, 0.0,
-          // Top
           1.0, 0.0,
           1.0, 1.0,
           0.0, 1.0,
+          // Back
           0.0, 0.0,
+          1.0, 0.0,
+          1.0, 1.0,
+          0.0, 1.0,
+          // Top
+          0.0, 0.0,
+          1.0, 0.0,
+          1.0, 1.0,
+          0.0, 1.0,
           // Bottom
           0.0, 0.0,
-          0.0, 0.0,
-          0.0, 0.0,
-          0.0, 0.0,
+          1.0, 0.0,
+          1.0, 1.0,
+          0.0, 1.0,
           // Right
           0.0, 0.0,
-          0.0, 0.0,
-          0.0, 0.0,
-          0.0, 0.0,
+          1.0, 0.0,
+          1.0, 1.0,
+          0.0, 1.0,
           // Left
           0.0, 0.0,
-          0.0, 0.0,
-          0.0, 0.0,
-          0.0, 0.0,
+          1.0, 0.0,
+          1.0, 1.0,
+          0.0, 1.0,
         ];
     
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates),
@@ -135,7 +135,7 @@ let init = () =>{
           gl.STATIC_DRAW);
     
 };
-  let draw = (gl,VP,projectionMatrix, programInfo,texture) =>{
+  let draw = (gl,VP,projectionMatrix, programInfo,texture,scale) =>{
       var modelViewMatrix = mat4.create();
       mat4.translate(modelViewMatrix,     // destination matrix
         modelViewMatrix,     // matrix to translate
@@ -144,6 +144,9 @@ let init = () =>{
       modelViewMatrix,
       obj_rot,
       [1, 1, 0]);
+      mat4.scale(modelViewMatrix,
+        modelViewMatrix,
+        scale)
       mat4.multiply(modelViewMatrix,modelViewMatrix,VP);
       {
         const numComponents = 3;
