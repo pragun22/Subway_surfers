@@ -19,7 +19,7 @@ function Player(gl,x,y,z) {
   let draw = (gl,VP,projectionMatrix, programInfo,textures) =>{
       var modelViewMatrix = mat4.create();
       trans = [location[0]+x, location[1]+y, location[2]+z];
-      console.log(trans[2]);
+      console.log(trans);
         // mat4.scale(modelViewMatrix,
         //   modelViewMatrix,
         // [0.4,0.4,0.4])
@@ -33,7 +33,6 @@ function Player(gl,x,y,z) {
       mat4.multiply(modelViewMatrix,modelViewMatrix,VP);
       var ind = 0;
       primitives.forEach( (prim) => {
-        console.log(ind)
         gl = prim.draw(gl,modelViewMatrix,projectionMatrix,programInfo,textures[ind],[1, 1, 1]);
         // prim.tick();
         if( ind < 2 ){

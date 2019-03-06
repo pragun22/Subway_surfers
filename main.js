@@ -85,19 +85,19 @@ function main() {
     var then = 0;
     function render(now) {
       Mousetrap.bind(["left", "a"], () => {
-      console.log("check2")
+      // console.log("check2")
           player.location[0]-=0.5
       });
       Mousetrap.bind(["d", "right"], () => {
-      console.log("check1")        
+      // console.log("check1")        
         player.location[0]+=0.5          
       });
-      Mousetrap.bind(["w", "upper"], () => {
-        console.log("check3")        
-          player.location[2]+=0.05          
+      Mousetrap.bind(["w"], () => {
+        // console.log("check3")        
+          player.location[2]-=0.05          
         });
-      Mousetrap.bind(["s", "upper"], () => {
-        console.log("check3")        
+      Mousetrap.bind(["s"], () => {
+        // console.log("check3")        
           player.location[2]+=1.0          
         });
         now *= 0.001;  // convert to seconds
@@ -132,18 +132,15 @@ function main() {
                       aspect,
                       zNear,
                       zFar);
-// Compute a matrix for the camera
     var modelViewMatrix = mat4.create();
     mat4.lookAt(modelViewMatrix, eye, target, [0, 1, 0]);
     target = [-0.5, player.location[1], player.location[2]]
     eye = [-0.5, player.location[1]+1.3, player.location[2] - 3];
     tex = [textures.legyel,textures.legbl,textures.leggr]
     gl = player.draw(gl, modelViewMatrix,projectionMatrix, programInfo,tex);
-    // console.log('player');
     gl = tracks[0].draw(gl, modelViewMatrix,projectionMatrix, programInfo,textures.rail);
     tracks[0].tick();
     player.tick();
-    // console.log("returned")
 };
 
 //
