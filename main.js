@@ -1,11 +1,11 @@
 
 const canvas = document.querySelector('#glcanvas');
 const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-const player = Player(gl,0.55,0.6,-0.2);
+const player = Player(gl,-0.5,0.5,-0.2);
 var tracks = []
-tracks.push(Track(gl,0,0,-1));
-var target = [player.location[0]-0.5, player.location[1], player.location[2]]
-var eye = [player.location[0]-0.5, player.location[1]+1.3, player.location[2] - 2];
+tracks.push(Track(gl,-0.5,0,-1));
+var target = [-0.5, 0.6, -0.2]
+var eye = [-0.5, 1.2, -2.4];
 const textures = {
       lightwood: loadTexture(gl, 'lightwood.jpeg'),
       rail: loadTexture(gl,'rail1.jpg'),
@@ -86,19 +86,25 @@ function main() {
     function render(now) {
       Mousetrap.bind(["left", "a"], () => {
       // console.log("check2")
-          player.location[0]-=0.5
+          player.location[0]+=0.5
       });
       Mousetrap.bind(["d", "right"], () => {
       // console.log("check1")        
-        player.location[0]+=0.5          
+        player.location[0]-=0.5          
       });
       Mousetrap.bind(["w"], () => {
         // console.log("check3")        
-          player.location[2]-=0.05          
+        eye[2]+=0.05      
+        target[2]+=0.05;
+        player.location[2] += 0.05;
+        // Player.reset(eye[2]);
         });
       Mousetrap.bind(["s"], () => {
         // console.log("check3")        
-          player.location[2]+=1.0          
+          eye[2]-=0.05;
+          target[2]-=0.05;
+        player.location[2] -= 0.05;
+          // player.reset(eye[2]);          
         });
         now *= 0.001;  // convert to seconds
         const deltaTime = now - then;
@@ -132,13 +138,12 @@ function main() {
                       aspect,
                       zNear,
                       zFar);
+                      
     var modelViewMatrix = mat4.create();
     mat4.lookAt(modelViewMatrix, eye, target, [0, 1, 0]);
-    target = [-0.5, player.location[1], player.location[2]]
-    eye = [-0.5, player.location[1]+1.3, player.location[2] - 3];
     tex = [textures.legyel,textures.legbl,textures.leggr]
     gl = player.draw(gl, modelViewMatrix,projectionMatrix, programInfo,tex);
-    gl = tracks[0].draw(gl, modelViewMatrix,projectionMatrix, programInfo,textures.rail);
+    gl = tracks[0].draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.rail);
     tracks[0].tick();
     player.tick();
 };

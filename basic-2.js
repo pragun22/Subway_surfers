@@ -137,6 +137,7 @@ let init = () =>{
 };
   let draw = (gl,VP,projectionMatrix, programInfo,texture,scale) =>{
       var modelViewMatrix = mat4.create();
+      mat4.multiply(modelViewMatrix,modelViewMatrix,VP);
       mat4.translate(modelViewMatrix,     // destination matrix
         modelViewMatrix,     // matrix to translate
         location);  // amount to translate
@@ -144,10 +145,9 @@ let init = () =>{
       // modelViewMatrix,
       // obj_rot,
       // [0, 1, 0]);
-      mat4.scale(modelViewMatrix,
-        modelViewMatrix,
-        scale)
-      mat4.multiply(modelViewMatrix,modelViewMatrix,VP);
+      // mat4.scale(modelViewMatrix,
+      //   modelViewMatrix,
+      //   scale);
       {
         const numComponents = 3;
         const type = gl.FLOAT;
@@ -165,11 +165,12 @@ let init = () =>{
         gl.enableVertexAttribArray(
             programInfo.attribLocations.vertexPosition);
       }
-      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-      gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
-  		gl.vertexAttribPointer(programInfo.attribLocations.textureCoord, 2, gl.FLOAT, false, 0, 0);
-      gl.enableVertexAttribArray(programInfo.attribLocations.textureCoord);
-      
+      {
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+        gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
+        gl.vertexAttribPointer(programInfo.attribLocations.textureCoord, 2, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(programInfo.attribLocations.textureCoord);
+      }
 
       gl.useProgram(programInfo.program);
       const normalMatrix = mat4.create();

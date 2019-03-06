@@ -17,20 +17,20 @@ function Player(gl,x,y,z) {
     });
   };
   let draw = (gl,VP,projectionMatrix, programInfo,textures) =>{
-      var modelViewMatrix = mat4.create();
-      trans = [location[0]+x, location[1]+y, location[2]+z];
-      console.log(trans);
-        // mat4.scale(modelViewMatrix,
-        //   modelViewMatrix,
-        // [0.4,0.4,0.4])
+    var modelViewMatrix = mat4.create();
+    trans = [location[0]+x, location[1]+y, location[2]+z];
+    mat4.multiply(modelViewMatrix,modelViewMatrix,VP);
+      // console.log(trans);
+      // mat4.scale(modelViewMatrix,
+      //   modelViewMatrix,
+      // [0.4,0.4,0.4])
       mat4.translate(modelViewMatrix,     // destination matrix
         modelViewMatrix,     // matrix to translate
         trans);  // amount to translate
-      // mat4.rotate(modelViewMatrix,
+        // mat4.rotate(modelViewMatrix,
       // modelViewMatrix,
       // rotation_ob,
       // [0, 1, 0]);
-      mat4.multiply(modelViewMatrix,modelViewMatrix,VP);
       var ind = 0;
       primitives.forEach( (prim) => {
         gl = prim.draw(gl,modelViewMatrix,projectionMatrix,programInfo,textures[ind],[1, 1, 1]);
@@ -45,6 +45,9 @@ function Player(gl,x,y,z) {
   let tick = () => {
     rotation_ob += 0.01
   };
+  let reset = (val) =>{
+    // player.location[2] = val + 2;
+  };
   return {
     location: location,
     position: positionBuffer,
@@ -53,6 +56,7 @@ function Player(gl,x,y,z) {
     draw : draw,
     init : init,
     tick : tick,
+    reset : reset,
   };
 
 }
