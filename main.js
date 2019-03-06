@@ -1,7 +1,7 @@
 
 const canvas = document.querySelector('#glcanvas');
 const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-const player = Player(gl,-0.5,1,-2);
+const player = Player(gl,0.55,0.6,-0.2);
 const tracks = Track(gl,0,0,-1);
 var target = [tracks.location[0]-0.5, tracks.location[1], tracks.location[2]]
 var eye = [tracks.location[0]-0.5, tracks.location[1]+1.3, tracks.location[2] - 2];
@@ -79,15 +79,23 @@ function main() {
     tracks.init();
     var then = 0;
     function render(now) {
-      now *= 0.001;  // convert to seconds
-      const deltaTime = now - then;
-      then = now;
-      drawScene(gl, programInfo, deltaTime);
-      // console.log("calling again and again")
+      Mousetrap.bind(["left", "a"], () => {
+      console.log("check2")
+          player.location[0]-=0.5
+      });
+      Mousetrap.bind(["d", "right"], () => {
+      console.log("check1")        
+        player.location[0]+=0.5          
+      });
+        now *= 0.001;  // convert to seconds
+        const deltaTime = now - then;
+        then = now;
+        drawScene(gl, programInfo, deltaTime);
+        // console.log("calling again and again")
+        requestAnimationFrame(render);
+      }
       requestAnimationFrame(render);
     }
-    requestAnimationFrame(render);
-}
   
   function drawScene(gl, programInfo, deltaTime) {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);  // Clear to black, fully opaque
@@ -96,17 +104,17 @@ function main() {
     gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    const fieldOfView = 45 * Math.PI / 180;   // in radians
+    const fieldOfView = 60 * Math.PI / 180;   // in radians
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     const zNear = 0.1;
-    const zFar = 100.0;
+    const zFar = 2000.0;
     const projectionMatrix = mat4.create();
-
     mat4.perspective(projectionMatrix,
                       fieldOfView,
                       aspect,
                       zNear,
                       zFar);
+// Compute a matrix for the camera
     var modelViewMatrix = mat4.create();
     // console.log(modelViewMatrix);
     mat4.lookAt(modelViewMatrix, eye, target, [0, 1, 0]);
@@ -114,6 +122,7 @@ function main() {
     // console.log('player');
     gl = tracks.draw(gl, modelViewMatrix,projectionMatrix, programInfo,textures.rail);
     tracks.tick();
+    player.tick();
     // console.log("returned")
 };
 

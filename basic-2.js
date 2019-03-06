@@ -1,4 +1,4 @@
-function Basic2(gl,x,y,z,len,wid,hgt) {
+function Basic2(gl,x,y,z,len,hgt,wid) {
   var location = [x,y,z]
   const positionBuffer = gl.createBuffer();
   const indexBuffer = gl.createBuffer();  
@@ -143,7 +143,7 @@ let init = () =>{
       mat4.rotate(modelViewMatrix,
       modelViewMatrix,
       obj_rot,
-      [1, 1, 0]);
+      [0, 1, 0]);
       mat4.scale(modelViewMatrix,
         modelViewMatrix,
         scale)
@@ -215,7 +215,7 @@ let init = () =>{
   };
 
   let tick = () => {
-    // obj_rot += 0.01
+    obj_rot += 0.01
   };
   return {
     location: location,
