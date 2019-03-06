@@ -52,27 +52,27 @@ let init = () =>{
     1,-1,1, //30
     1.0/8.0,-1,1, //31
     ];
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-    const faceColors = [
-      [1.0,  0.69,  0.39,  1.0],    
-      [1.0,  0.69,  0.39,  1.0], // body sandy    
+    // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+    // const faceColors = [
+    //   [1.0,  0.69,  0.39,  1.0],    
+    //   [1.0,  0.69,  0.39,  1.0], // body sandy    
 
-      [0.69,  0.0,  0.46,  1.0],    
-      [0.69,  0.0,  0.46,  1.0], //head purples   
+    //   [0.69,  0.0,  0.46,  1.0],    
+    //   [0.69,  0.0,  0.46,  1.0], //head purples   
       
-      [0.69,  0.0,  0.0,  1.0],    
-      [0.69,  0.0,  0.0,  1.0],    
+    //   [0.69,  0.0,  0.0,  1.0],    
+    //   [0.69,  0.0,  0.0,  1.0],    
 
-      [0.69,  0.0,  0.0,  1.0],    
-      [0.69,  0.0,  0.0,  1.0],    // legs
-    ];
-    var colors = [];
-    for (var j = 0; j < faceColors.length; ++j) {
-      const c = faceColors[j];
-      colors = colors.concat(c, c, c, c);
-    }
-    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+    //   [0.69,  0.0,  0.0,  1.0],    
+    //   [0.69,  0.0,  0.0,  1.0],    // legs
+    // ];
+    // var colors = [];
+    // for (var j = 0; j < faceColors.length; ++j) {
+    //   const c = faceColors[j];
+    //   colors = colors.concat(c, c, c, c);
+    // }
+    // gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    // gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
     var indices = [];
     for(var i=0;i<4*8;i+=8){
@@ -177,7 +177,7 @@ let init = () =>{
       var modelViewMatrix = mat4.create();
       mat4.translate(modelViewMatrix,     // destination matrix
         modelViewMatrix,     // matrix to translate
-        [0.0, 0.0, -6.0]);  // amount to translate
+        location);  // amount to translate
       mat4.rotate(modelViewMatrix,
       modelViewMatrix,
       rotation_ob,
@@ -223,7 +223,7 @@ let init = () =>{
           modelViewMatrix); 
 
     gl.activeTexture(gl.TEXTURE0);
-		let bind_texture = textures.lightwood;
+		let bind_texture = textures;
 		gl.bindTexture(gl.TEXTURE_2D, bind_texture);
 		gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
 		{

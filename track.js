@@ -13,7 +13,7 @@ function Track(gl,x,y,z) {
     'o':1,
   };
   for(var i =0 ; i < 3; i++){
-    tracks.push(Basic(gl, x+i, y, z, col,0.25 ,0.5 ,0.12))
+    tracks.push(Basic(gl, x+i*0.55, 0, 0, col,0.25 ,0.5 ,0.12))
   }
   let init = () =>{
     tracks.forEach(track => {
@@ -24,14 +24,15 @@ function Track(gl,x,y,z) {
       var modelViewMatrix = mat4.create();
       mat4.translate(modelViewMatrix,     // destination matrix
         modelViewMatrix,     // matrix to translate
-        [0.0, 0.0, -6.0]);  // amount to translate
+        location);  // amount to translate
       mat4.rotate(modelViewMatrix,
       modelViewMatrix,
       0,
       [1, 1, 0]);
       mat4.multiply(modelViewMatrix,modelViewMatrix,VP);
-      tracks.forEach( track => {
+      tracks.forEach( (track,index) => {
         gl = track.draw(gl,VP,projectionMatrix,programInfo,texture);
+        console.log(index);
       });
       return gl;
   };

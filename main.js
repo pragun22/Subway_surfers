@@ -1,14 +1,15 @@
 
 const canvas = document.querySelector('#glcanvas');
 const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-const player = Player(gl,0,0,0);
-const tracks = Track(gl,0,0,-6);
-var target = [tracks.location[0], tracks.location[1], tracks.location[2]]
-var eye = [tracks.location[0], tracks.location[1]+3, tracks.location[2] - 6];
+const player = Player(gl,0,0,-2);
+const tracks = Track(gl,0,0,-1);
+var target = [player.location[0]-0.5, player.location[1], player.location[2]]
+var eye = [player.location[0]-0.5, player.location[1]+1.3, player.location[2] - 2];
 const textures = {
       lightwood: loadTexture(gl, 'lightwood.jpeg'),
       rail: loadTexture(gl,'rail1.jpg'),
-};
+      colorful: loadTexture(gl,'player.jpeg')
+    };
 main();
 function main() {
   if (!gl) {
@@ -58,31 +59,6 @@ function main() {
   }
   `;
 
-  // const vsSource = `
-  // attribute vec4 aVertexPosition;
-  //   attribute vec4 aVertexColor;
-  //   attribute vec2 aTextureCoord;
-    
-  //   uniform mat4 uModelViewMatrix;
-  //   uniform mat4 uProjectionMatrix;
-    
-  //   varying lowp vec4 vColor;
-  //   varying highp vec2 vTextureCoord;
-  //   void main(void) {
-  //     gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
-  //     vColor = aVertexColor;
-  //   }
-  //   `;
-    
-  //   // Fragment shader program
-    
-  //   const fsSource = `
-  //   varying lowp vec4 vColor;
-    
-  //   void main(void) {
-  //     gl_FragColor = vColor;
-  //   }
-  //   `;
     const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
     const programInfo = {
       program: shaderProgram,
@@ -133,8 +109,9 @@ function main() {
                       zFar);
     var modelViewMatrix = mat4.create();
     // console.log(modelViewMatrix);
-    // mat4.lookAt(modelViewMatrix, eye, target, [0, 1, 0]);
-    // gl = player.draw(gl, modelViewMatrix,projectionMatrix, programInfo,textures);
+    mat4.lookAt(modelViewMatrix, eye, target, [0, 1, 0]);
+    gl = player.draw(gl, modelViewMatrix,projectionMatrix, programInfo,textures.colorful);
+    // console.log('player');
     gl = tracks.draw(gl, modelViewMatrix,projectionMatrix, programInfo,textures.rail);
     tracks.tick();
     // console.log("returned")

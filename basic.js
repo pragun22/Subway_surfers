@@ -171,7 +171,7 @@ let init = () =>{
       var modelViewMatrix = mat4.create();
       mat4.translate(modelViewMatrix,     // destination matrix
         modelViewMatrix,     // matrix to translate
-        [0.0, 0.0, -2.0]);  // amount to translate
+        location);  // amount to translate
       mat4.rotate(modelViewMatrix,
       modelViewMatrix,
       obj_rot,
@@ -244,7 +244,7 @@ let init = () =>{
   };
 
   let tick = () => {
-    obj_rot += 0.01
+    // obj_rot += 0.01
   };
   return {
     location: location,
