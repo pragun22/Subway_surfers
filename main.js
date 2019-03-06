@@ -1,17 +1,28 @@
 
 const canvas = document.querySelector('#glcanvas');
 const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-const player = Player(gl,-0.5,0.5,-0.2);
-var tracks = []
-tracks.push(Track(gl,-0.5,0,-1));
-var target = [-0.5, 0.6, -0.2]
-var eye = [-0.5, 1.2, -2.4];
+const player = Player(gl,0,0.5,-0.2);
+var tracks = [];
+var walls = [];
+// tracks.push(Basic(gl, 0.7, 0, 0,0.25 ,10.5 ,0.12));
+// tracks.push(Basic(gl, -0.7, 0, 0,0.25 ,10.5 ,0.12));
+// tracks.push(Basic(gl, 0.0, 0, 0,0.25 ,10.5 ,0.12));
+// // tracks.push(Track(gl,-0.5,0,-1));
+tracks.push(Basic(gl, 0.7, 0, 0,0.25 ,100.5 ,0.12));
+tracks.push(Basic(gl, -0.7, 0, 0,0.25 ,100.5 ,0.12));
+tracks.push(Basic(gl, 0.0, 0, 0,0.25 ,100.5 ,0.12));
+walls.push(Basic2(gl,1.0,0,0,0.1,5.0,100.0));
+walls.push(Basic2(gl,-1.0,0,0,0.1,5.0,100.0));
+var target = [0, 0.6, -0.2]
+var eye = [0, 1.2, -2.4];
 const textures = {
       lightwood: loadTexture(gl, 'lightwood.jpeg'),
-      rail: loadTexture(gl,'rail1.jpg'),
+      rail: loadTexture(gl,'tron.jpeg'),
       legyel: loadTexture(gl,'lego_yellow.jpeg'),
       legbl: loadTexture(gl,'lego_blue.jpeg'),
       leggr: loadTexture(gl,'lego_green.jpg'),
+      wall: loadTexture(gl,'tron_wall3.JPG')
+      // wall: loadTexture(gl,'wall.jpeg')
     };
 main();
 function main() {
@@ -82,6 +93,9 @@ function main() {
     tracks.forEach(track => {
       track.init();
     });
+    walls.forEach(wall => {
+      wall.init();
+    });
     var then = 0;
     function render(now) {
       eye[2]+=0.05      
@@ -89,11 +103,11 @@ function main() {
       player.location[2] += 0.05;
       Mousetrap.bind(["left", "a"], () => {
         // console.log("check2")
-        player.location[0]+=0.5
+        player.location[0]+=0.7
       });
       Mousetrap.bind(["d", "right"], () => {
         // console.log("check1")        
-        player.location[0]-=0.5          
+        player.location[0]-=0.7          
       });
       Mousetrap.bind(["w"], () => {
         // console.log("check3")        
@@ -123,14 +137,19 @@ function main() {
       requestAnimationFrame(render);
     }
   let tick = () => {
-    // console.log(player.location[2])
-    // console.log(tracks[0].location[2])
-    if ( player.location[2] - tracks[0].location[2] > 4 ){
-      console.log(player.location[2]);
-      tracks.push(Track(gl,-0.5,0,player.location[2]+0.8));
-      tracks[1].init()
-      console.log(tracks[0].location[2])
-      tracks.shift();
+    if ( player.location[2] - tracks[0].location[2] > 50 ){
+      var t = player.location[2];
+      tracks.forEach(track => {
+        track.location[2]= player.location[2];
+      });
+      walls.forEach(wall => {
+        wall.location[2]= player.location[2];
+      });
+      // tracks.push(Basic(gl, 0.7, 0, t,0.25 ,100.5 ,0.12));
+      // tracks.push(Basic(gl, -0.7, 0, t,0.25 ,100.5 ,0.12));
+      // tracks.push(Basic(gl, 0.0, 0, t,0.25 ,100.5 ,0.12));
+
+
     }
   };
   function drawScene(gl, programInfo, deltaTime) {
@@ -155,8 +174,15 @@ function main() {
     mat4.lookAt(modelViewMatrix, eye, target, [0, 1, 0]);
     tex = [textures.legyel,textures.legbl,textures.leggr]
     gl = player.draw(gl, modelViewMatrix,projectionMatrix, programInfo,tex);
-    gl = tracks[0].draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.rail);
-    tracks[0].tick();
+    tracks.forEach(track => {
+      gl = track.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.rail);
+    });
+    walls.forEach(wall => {
+      gl = wall.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.wall);
+    });
+    tracks.forEach(track => {
+      track.tick();
+    });
     player.tick();
 };
 
