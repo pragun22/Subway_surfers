@@ -4,11 +4,13 @@ const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
 const player = Player(gl,0,0.5,-0.2);
 var tracks = [];
 var walls = [];
+var obstacle = [];
 tracks.push(Basic(gl, 0.7, 0, 0,0.25 ,100.5 ,0.12));
 tracks.push(Basic(gl, -0.7, 0, 0,0.25 ,100.5 ,0.12));
 tracks.push(Basic(gl, 0.0, 0, 0,0.25 ,100.5 ,0.12));
 walls.push(Basic2(gl,1.0,0,0,0.1,5.0,100.0));
 walls.push(Basic2(gl,-1.0,0,0,0.1,5.0,100.0));
+obstacle.push(Basic2(gl,0,0,5.5,0.25,0.6,0.1));
 var target = [0, 0.6, -0.2]
 var eye = [0, 1.2, -2.4];
 const textures = {
@@ -17,12 +19,15 @@ const textures = {
   legyel: loadTexture(gl,'lego_yellow.jpeg'),
   legbl: loadTexture(gl,'lego_blue.jpeg'),
   leggr: loadTexture(gl,'lego_green.jpg'),
-  wall: loadTexture(gl,'tron_wall3.JPG')
-  // wall: loadTexture(gl,'wall.jpeg')
+  wall: loadTexture(gl,'tron_wall3.JPG'),
+  hurdle : loadTexture(gl,'hurdle3.jpeg')
+  // hurdle : loadTexture(gl,'hurdle1.jpg')
 };
 var speedx = 0;
 var speedy = 0;
+var speedz = 0.05;
 var isjump = 0;
+var mag_time = 0;
 var temp = 0;
 main();
 function main() {
@@ -88,7 +93,15 @@ function main() {
         uSampler: gl.getUniformLocation(shaderProgram, 'uSampler'),
       },
     };
-
+    setInterval(() => {
+      speedz += 0.05;
+      mag_time += 0.003;
+  }, 30 * 1000);
+  setInterval(() => {
+      obstacle.push(Basic2(gl,0,0,player.location[2]+25.5,0.25,0.6,0.1)); 
+      obstacle.shift();
+      obstacle[0].init();
+    }, 12 * 1000);
     player.init();
     tracks.forEach(track => {
       track.init();
@@ -96,24 +109,22 @@ function main() {
     walls.forEach(wall => {
       wall.init();
     });
+    obstacle.forEach(obs => {
+      obs.init();
+    });
     var then = 0;
     function render(now) {
-      eye[2]+=0.05      
-      target[2]+=0.05;
-      player.location[2] += 0.05;
+      eye[2]+=speedz;      
+      target[2]+=speedz;
+      player.location[2] +=speedz;
       Mousetrap.bind(["left", "a"], () => {
-        speedx = 0.03
+        speedx = 0.03+mag_time;
         temp = 0.7
       });
       Mousetrap.bind(["d", "right"], () => {
-        speedx = -0.03
+        speedx = -0.03-mag_time;
         temp = 0.7
       });
-      // Mousetrap.bind(["w"], () => {
-      //   eye[2]+=0.05      
-      //   target[2]+=0.05;
-      //   player.location[2] += 0.05;
-      // });
       Mousetrap.bind(["s"], () => {
         eye[2]-=0.05;
         target[2]-=0.05;
@@ -122,7 +133,7 @@ function main() {
       Mousetrap.bind(["w", "space"], () => {
         if(isjump==0) {
           isjump = 1;
-          speedy = 0.045;
+          speedy = 0.055;
         }
       });
       tick();
@@ -136,10 +147,9 @@ function main() {
       requestAnimationFrame(render);
     }
   let tick = () => {
+
     if(isjump==1){
-      console.log(isjump)
       player.location[1]+=speedy;
-      console.log(player.location[1])
       speedy -= 0.002;
       if(player.location[1] < 0 ){
         isjump = 0;
@@ -194,6 +204,9 @@ function main() {
     });
     walls.forEach(wall => {
       gl = wall.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.wall);
+    });
+    obstacle.forEach(obs => {
+      gl = obs.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.hurdle);
     });
     tracks.forEach(track => {
       track.tick();
