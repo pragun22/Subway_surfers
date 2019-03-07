@@ -8,8 +8,8 @@ function Bridge(gl,x,y,z,num) {
 	const textureCoordBuffer = gl.createBuffer();
   var primitives = [];
   primitives.push(Basic2(gl, 0,2.8,0,num-0.4,1.2,2));
-  primitives.push(Basic2(gl, -1.2,2,0,num-0.25,2,2));
-  primitives.push(Basic2(gl, 1.2,2,0,num-0.25,2,2));
+  primitives.push(Basic2(gl, -1.4,2,0,num,2,2));
+  primitives.push(Basic2(gl, 1.4,2,0,num,2,2));
   let init = () =>{
     primitives.forEach( prim => {
       prim.init();
@@ -26,7 +26,7 @@ function Bridge(gl,x,y,z,num) {
       // modelViewMatrix,
       // rotation_ob,
       // [0, 1, 0]);
-      primitives.forEach( (prim) => {
+      primitives.forEach( (prim,i) => {
         gl = prim.draw(gl,modelViewMatrix,projectionMatrix,programInfo,textures,[1, 1, 1]);
         // prim.tick();
       });

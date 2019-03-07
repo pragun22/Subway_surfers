@@ -16,16 +16,16 @@ obstacle.push(Basic2(gl,0,0,5.5,0.25,0.6,0.1));
 var target = [0, 0.6, -0.2]
 var eye = [0, 1.2, -2.7];
 const textures = {
-  lightwood: loadTexture(gl, 'lightwood.jpeg'),
-  rail: loadTexture(gl,'tron.jpeg'),
-  legyel: loadTexture(gl,'lego_yellow.jpeg'),
-  legbl: loadTexture(gl,'lego_blue.jpeg'),
-  leggr: loadTexture(gl,'lego_green.jpg'),
-  // wall: loadTexture(gl,'wallside1.jpeg'),
-  wall: loadTexture(gl,'tron_wall3.JPG'),
-  hurdle : loadTexture(gl,'hurdle3.jpeg'),
-  build : loadTexture(gl,'build.jpeg'),
-  // hurdle : loadTexture(gl,'train.jpg')
+  lightwood: loadTexture(gl, './images/lightwood.jpeg'),
+  rail: loadTexture(gl,'./images/tron.jpeg'),
+  legyel: loadTexture(gl,'./images/lego_yellow.jpeg'),
+  legbl: loadTexture(gl,'./images/lego_blue.jpeg'),
+  leggr: loadTexture(gl,'./images/lego_green.jpg'),
+  wall: loadTexture(gl,'./images/tron_wall3.JPG'),
+  hurdle : loadTexture(gl,'./images/hurdle3.jpeg'),
+  build : loadTexture(gl,'./images/build3.jpeg'),
+  t1 : loadTexture(gl,'./images/t1.jpeg'),
+  t2 : loadTexture(gl,'./images/t2.jpeg'),
 };
 var speedx = 0;
 var speedy = 0;
@@ -106,6 +106,13 @@ function main() {
       obstacle.shift();
       obstacle[0].init();
     }, 12 * 1000);
+    setInterval(() => {
+        var a = (Math.floor(Math.random() * 10))%2;
+        var b = (Math.floor(Math.random() * 10) > 5? 1 : -1);
+        bridge.push(Bridge(gl,a*b,0,player.location[2]+24,0.9)); 
+        bridge.shift();
+        bridge[0].init();
+      }, 16 * 1000);
     player.init();
     tracks.forEach(track => {
       track.init();
