@@ -5,23 +5,27 @@ const player = Player(gl,0,0.5,-0.2);
 var tracks = [];
 var walls = [];
 var obstacle = [];
-tracks.push(Basic(gl, 0.7, 0, 0,0.25 ,100.5 ,0.12));
-tracks.push(Basic(gl, -0.7, 0, 0,0.25 ,100.5 ,0.12));
-tracks.push(Basic(gl, 0.0, 0, 0,0.25 ,100.5 ,0.12));
-walls.push(Basic2(gl,1.0,0,0,0.1,5.0,100.0));
-walls.push(Basic2(gl,-1.0,0,0,0.1,5.0,100.0));
+var bridge = [];
+bridge.push(Bridge(gl,0,0,24,0.9));
+tracks.push(Basic(gl, 1.2, 0, 0,0.35 ,100.5 ,0.12));
+tracks.push(Basic(gl, -1.2, 0, 0,0.35 ,100.5 ,0.12));
+tracks.push(Basic(gl, 0.0, 0, 0,0.35 ,100.5 ,0.12));
+walls.push(Basic2(gl,1.5,2,0,0.1,5.0,100.0));
+walls.push(Basic2(gl,-1.5,2,0,0.1,5.0,100.0));
 obstacle.push(Basic2(gl,0,0,5.5,0.25,0.6,0.1));
 var target = [0, 0.6, -0.2]
-var eye = [0, 1.2, -2.4];
+var eye = [0, 1.2, -2.7];
 const textures = {
   lightwood: loadTexture(gl, 'lightwood.jpeg'),
   rail: loadTexture(gl,'tron.jpeg'),
   legyel: loadTexture(gl,'lego_yellow.jpeg'),
   legbl: loadTexture(gl,'lego_blue.jpeg'),
   leggr: loadTexture(gl,'lego_green.jpg'),
+  // wall: loadTexture(gl,'wallside1.jpeg'),
   wall: loadTexture(gl,'tron_wall3.JPG'),
-  hurdle : loadTexture(gl,'hurdle3.jpeg')
-  // hurdle : loadTexture(gl,'hurdle1.jpg')
+  hurdle : loadTexture(gl,'hurdle3.jpeg'),
+  build : loadTexture(gl,'build.jpeg'),
+  // hurdle : loadTexture(gl,'train.jpg')
 };
 var speedx = 0;
 var speedy = 0;
@@ -112,18 +116,21 @@ function main() {
     obstacle.forEach(obs => {
       obs.init();
     });
+    bridge.forEach(br => {
+      br.init();
+    });
     var then = 0;
     function render(now) {
       eye[2]+=speedz;      
       target[2]+=speedz;
       player.location[2] +=speedz;
       Mousetrap.bind(["left", "a"], () => {
-        speedx = 0.03+mag_time;
-        temp = 0.7
+        speedx = 0.04+mag_time;
+        temp = 1.2
       });
       Mousetrap.bind(["d", "right"], () => {
-        speedx = -0.03-mag_time;
-        temp = 0.7
+        speedx = -0.04-mag_time;
+        temp = 1.2
       });
       Mousetrap.bind(["s"], () => {
         eye[2]-=0.05;
@@ -167,8 +174,12 @@ function main() {
         temp-=speedx;
       } 
     };
-    if ( player.location[2] - tracks[0].location[2] > 50 ){
-      var t = player.location[2];
+    if ( player.location[2] - tracks[0].location[2] > 20 ){
+      var t = player.location[2];      
+      // tracks.push(Basic(gl, 1.2, 0, 0,0.35 ,t+20 ,0.12));
+      // tracks.push(Basic(gl, -1.2, 0, 0,0.35 ,t+20 ,0.12));
+      // tracks.push(Basic(gl, 0.0, 0, 0,0.35 ,t+20 ,0.12));
+      
       tracks.forEach(track => {
         track.location[2]= player.location[2];
       });
@@ -184,7 +195,7 @@ function main() {
     gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    const fieldOfView = 60 * Math.PI / 180;   // in radians
+    const fieldOfView = 45 * Math.PI / 180;   // in radians
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     const zNear = 0.1;
     const zFar = 100.0;
@@ -198,25 +209,28 @@ function main() {
     var modelViewMatrix = mat4.create();
     mat4.lookAt(modelViewMatrix, eye, target, [0, 1, 0]);
     tex = [textures.legyel,textures.legbl,textures.leggr]
-    gl = player.draw(gl, modelViewMatrix,projectionMatrix, programInfo,tex);
+    player.draw(gl, modelViewMatrix,projectionMatrix, programInfo,tex);
+    bridge.forEach(obs => {
+      obs.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.build);
+    });
+    // console.log(modelViewMatrix)
+    // console.log("b")
     tracks.forEach(track => {
-      gl = track.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.rail);
+      track.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.rail);
     });
     walls.forEach(wall => {
-      gl = wall.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.wall);
+      wall.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.wall);
     });
     obstacle.forEach(obs => {
-      gl = obs.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.hurdle);
+       obs.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.hurdle);
     });
+    // console.log("a")
+    // console.log(modelViewMatrix)
     tracks.forEach(track => {
       track.tick();
     });
     player.tick();
 };
-
-//
-// Initialize a shader program, so WebGL knows how to draw our data
-//
 function initShaderProgram(gl, vsSource, fsSource) {
   const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
   const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
@@ -237,29 +251,14 @@ function initShaderProgram(gl, vsSource, fsSource) {
 
   return shaderProgram;
 };
-
-//
-// creates a shader of the given type, uploads the source and
-// compiles it.
-//
 function loadShader(gl, type, source) {
   const shader = gl.createShader(type);
-
-  // Send the source to the shader object
-
   gl.shaderSource(shader, source);
-
-  // Compile the shader program
-
   gl.compileShader(shader);
-
-  // See if it compiled successfully
-
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
     alert('An error occurred compiling the shaders: ' + gl.getShaderInfoLog(shader));
     gl.deleteShader(shader);
     return null;
   }
-
   return shader;
 }
