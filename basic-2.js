@@ -5,7 +5,7 @@ function Basic2(gl,x,y,z,len,hgt,wid) {
 	const colorBuffer = gl.createBuffer();
 	const normalBuffer = gl.createBuffer();
   const textureCoordBuffer = gl.createBuffer();
-  obj_rot = 0;
+  var obj_rot = 0;
 let init = () =>{
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
   const positions = [

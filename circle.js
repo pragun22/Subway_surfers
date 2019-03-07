@@ -5,7 +5,7 @@ function Circle(gl,x,y,z,r) {
     const colorBuffer = gl.createBuffer();
     const normalBuffer = gl.createBuffer();
     const textureCoordBuffer = gl.createBuffer();
-    obj_rot = 0;
+    var rot = 0;
   let init = () =>{
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     var n = 40;
@@ -77,10 +77,10 @@ function Circle(gl,x,y,z,r) {
         mat4.translate(modelViewMatrix,     // destination matrix
           modelViewMatrix,     // matrix to translate
           location);  // amount to translate
-        // mat4.rotate(modelViewMatrix,
-        // modelViewMatrix,
-        // obj_rot,
-        // [0, 1, 0]);
+        mat4.rotate(modelViewMatrix,
+        modelViewMatrix,
+        rot,
+        [0, 1, 0]);
         // mat4.scale(modelViewMatrix,
         //   modelViewMatrix,
         //   scale);
@@ -152,7 +152,7 @@ function Circle(gl,x,y,z,r) {
     };
   
     let tick = () => {
-      obj_rot += 0.01
+      rot += 0.07
     };
     return {
       location: location,

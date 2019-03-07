@@ -7,7 +7,7 @@ var walls = [];
 var obstacle = [];
 var bridge = [];
 var coins = [];
-coins.push(Circle(gl,0,0.4,15,0.4));
+alt = [-1.2, 0 ,1.2]
 bridge.push(Bridge(gl,0,0,24,0.9));
 tracks.push(Basic(gl, 1.2, 0, 0,0.35 ,100.5 ,0.12));
 tracks.push(Basic(gl, -1.2, 0, 0,0.35 ,100.5 ,0.12));
@@ -15,8 +15,11 @@ tracks.push(Basic(gl, 0.0, 0, 0,0.35 ,100.5 ,0.12));
 walls.push(Basic2(gl,1.5,2,0,0.1,5.0,100.0));
 walls.push(Basic2(gl,-1.5,2,0,0.1,5.0,100.0));
 obstacle.push(Basic2(gl,0,0,5.5,0.25,0.6,0.1));
+for(var i = 0 ; i < 4 ; i++){
+  coins.push(Circle(gl,alt[i%3],0.4,15-i*1.5,0.2));
+}
 var target = [0, 0.6, -0.2]
-var eye = [0, 1.2, -2.7];
+var eye = [0, 1.4, -3.1];
 const textures = {
   lightwood: loadTexture(gl, './images/lightwood.jpeg'),
   rail: loadTexture(gl,'./images/tron.jpeg'),
@@ -116,6 +119,16 @@ function main() {
         bridge.shift();
         bridge[0].init();
       }, 16 * 1000);
+      setInterval(() => {
+        coins = [];
+        for(var i = 0 ; i < 9 ; i++){
+          var a = Math.floor(Math.random() * 10);          
+          coins.push(Circle(gl,alt[(i+a)%3],0.4,player.location[2]+30-i*1.5,0.2));
+        }
+        coins.forEach(coin => {
+          coin.init();
+        });
+      }, 20 * 1000);
       player.init();
       tracks.forEach(track => {
         track.init();
@@ -245,8 +258,11 @@ function main() {
     });
     // console.log("a")
     // console.log(modelViewMatrix)
-    tracks.forEach(track => {
-      track.tick();
+    // tracks.forEach(track => {
+    //   track.tick();
+    // });
+    coins.forEach(coin => {
+      coin.tick();
     });
     player.tick();
 };
