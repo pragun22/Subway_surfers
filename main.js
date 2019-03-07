@@ -6,6 +6,8 @@ var tracks = [];
 var walls = [];
 var obstacle = [];
 var bridge = [];
+var coins = [];
+coins.push(Circle(gl,0,0.4,15,0.4));
 bridge.push(Bridge(gl,0,0,24,0.9));
 tracks.push(Basic(gl, 1.2, 0, 0,0.35 ,100.5 ,0.12));
 tracks.push(Basic(gl, -1.2, 0, 0,0.35 ,100.5 ,0.12));
@@ -24,7 +26,8 @@ const textures = {
   wall: loadTexture(gl,'./images/tron_wall3.JPG'),
   hurdle : loadTexture(gl,'./images/hurdle3.jpeg'),
   build : loadTexture(gl,'./images/build3.jpeg'),
-  t1 : loadTexture(gl,'./images/t1.jpeg'),
+  coin : loadTexture(gl,'./images/lego_red.jpg'),
+  // coin : loadTexture(gl,'./images/coin.png'),
   t2 : loadTexture(gl,'./images/t2.jpeg'),
 };
 var speedx = 0;
@@ -113,30 +116,34 @@ function main() {
         bridge.shift();
         bridge[0].init();
       }, 16 * 1000);
-    player.init();
-    tracks.forEach(track => {
-      track.init();
-    });
-    walls.forEach(wall => {
-      wall.init();
-    });
-    obstacle.forEach(obs => {
-      obs.init();
-    });
-    bridge.forEach(br => {
-      br.init();
-    });
+      player.init();
+      tracks.forEach(track => {
+        track.init();
+      });
+      walls.forEach(wall => {
+        wall.init();
+      });
+      obstacle.forEach(obs => {
+        obs.init();
+      });
+      bridge.forEach(br => {
+        br.init();
+      });
+      coins.forEach(coin => {
+        coin.init();
+      });
     var then = 0;
     function render(now) {
       eye[2]+=speedz;      
       target[2]+=speedz;
       player.location[2] +=speedz;
       Mousetrap.bind(["left", "a"], () => {
-        speedx = 0.04+mag_time;
+        speedx = 0.05+mag_time;
         temp = 1.2
       });
       Mousetrap.bind(["d", "right"], () => {
-        speedx = -0.04-mag_time;
+        
+        speedx = -0.05-mag_time;
         temp = 1.2
       });
       Mousetrap.bind(["s"], () => {
@@ -151,17 +158,17 @@ function main() {
         }
       });
       tick();
-        now *= 0.001;  // convert to seconds
-        const deltaTime = now - then;
-        then = now;
-        drawScene(gl, programInfo, deltaTime);
-        // console.log("calling again and again")
-        requestAnimationFrame(render);
-      }
+      now *= 0.001;  // convert to seconds
+      const deltaTime = now - then;
+      then = now;
+      drawScene(gl, programInfo, deltaTime);
+      // console.log("calling again and again")
       requestAnimationFrame(render);
     }
+    requestAnimationFrame(render);
+  }
   let tick = () => {
-
+    
     if(isjump==1){
       player.location[1]+=speedy;
       speedy -= 0.002;
@@ -194,6 +201,8 @@ function main() {
         wall.location[2]= player.location[2];
       });
     }
+    // eye[0] = 3*player.location[0]/5;
+    // target[0] = 3*player.location[0]/5;
   };
   function drawScene(gl, programInfo, deltaTime) {
     gl.clearColor(0.21, 0.35, 0.42, 0.5);  // Clear to black, fully opaque
@@ -230,6 +239,9 @@ function main() {
     });
     obstacle.forEach(obs => {
        obs.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.hurdle);
+    });
+    coins.forEach(coin => {
+       coin.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.coin);
     });
     // console.log("a")
     // console.log(modelViewMatrix)
