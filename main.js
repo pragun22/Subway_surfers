@@ -4,10 +4,6 @@ const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
 const player = Player(gl,0,0.5,-0.2);
 var tracks = [];
 var walls = [];
-// tracks.push(Basic(gl, 0.7, 0, 0,0.25 ,10.5 ,0.12));
-// tracks.push(Basic(gl, -0.7, 0, 0,0.25 ,10.5 ,0.12));
-// tracks.push(Basic(gl, 0.0, 0, 0,0.25 ,10.5 ,0.12));
-// // tracks.push(Track(gl,-0.5,0,-1));
 tracks.push(Basic(gl, 0.7, 0, 0,0.25 ,100.5 ,0.12));
 tracks.push(Basic(gl, -0.7, 0, 0,0.25 ,100.5 ,0.12));
 tracks.push(Basic(gl, 0.0, 0, 0,0.25 ,100.5 ,0.12));
@@ -16,14 +12,18 @@ walls.push(Basic2(gl,-1.0,0,0,0.1,5.0,100.0));
 var target = [0, 0.6, -0.2]
 var eye = [0, 1.2, -2.4];
 const textures = {
-      lightwood: loadTexture(gl, 'lightwood.jpeg'),
-      rail: loadTexture(gl,'tron.jpeg'),
-      legyel: loadTexture(gl,'lego_yellow.jpeg'),
-      legbl: loadTexture(gl,'lego_blue.jpeg'),
-      leggr: loadTexture(gl,'lego_green.jpg'),
-      wall: loadTexture(gl,'tron_wall3.JPG')
-      // wall: loadTexture(gl,'wall.jpeg')
-    };
+  lightwood: loadTexture(gl, 'lightwood.jpeg'),
+  rail: loadTexture(gl,'tron.jpeg'),
+  legyel: loadTexture(gl,'lego_yellow.jpeg'),
+  legbl: loadTexture(gl,'lego_blue.jpeg'),
+  leggr: loadTexture(gl,'lego_green.jpg'),
+  wall: loadTexture(gl,'tron_wall3.JPG')
+  // wall: loadTexture(gl,'wall.jpeg')
+};
+var speedx = 0;
+var speedy = 0;
+var isjump = 0;
+var temp = 0;
 main();
 function main() {
   if (!gl) {
@@ -102,29 +102,28 @@ function main() {
       target[2]+=0.05;
       player.location[2] += 0.05;
       Mousetrap.bind(["left", "a"], () => {
-        // console.log("check2")
-        player.location[0]+=0.7
+        speedx = 0.03
+        temp = 0.7
       });
       Mousetrap.bind(["d", "right"], () => {
-        // console.log("check1")        
-        player.location[0]-=0.7          
+        speedx = -0.03
+        temp = 0.7
       });
-      Mousetrap.bind(["w"], () => {
-        // console.log("check3")        
-        eye[2]+=0.05      
-        target[2]+=0.05;
-        player.location[2] += 0.05;
-        // tracks[0].location[2] -= 0.05;
-        // Player.reset(eye[2]);
-      });
+      // Mousetrap.bind(["w"], () => {
+      //   eye[2]+=0.05      
+      //   target[2]+=0.05;
+      //   player.location[2] += 0.05;
+      // });
       Mousetrap.bind(["s"], () => {
-        // console.log("check3")        
         eye[2]-=0.05;
         target[2]-=0.05;
         player.location[2] -= 0.05;
-        // tracks[0].location[2] += 0.05;
-
-        // player.reset(eye[2]);          
+      });
+      Mousetrap.bind(["w", "space"], () => {
+        if(isjump==0) {
+          isjump = 1;
+          speedy = 0.045;
+        }
       });
       tick();
         now *= 0.001;  // convert to seconds
@@ -137,6 +136,27 @@ function main() {
       requestAnimationFrame(render);
     }
   let tick = () => {
+    if(isjump==1){
+      console.log(isjump)
+      player.location[1]+=speedy;
+      console.log(player.location[1])
+      speedy -= 0.002;
+      if(player.location[1] < 0 ){
+        isjump = 0;
+        speedy = 0;
+        player.location[1] = 0;
+      } 
+    }
+    
+    if(temp>0){
+      player.location[0]+=speedx;
+      if(speedx < 0){
+        temp+=speedx;
+      }
+      else{
+        temp-=speedx;
+      } 
+    };
     if ( player.location[2] - tracks[0].location[2] > 50 ){
       var t = player.location[2];
       tracks.forEach(track => {
@@ -145,15 +165,10 @@ function main() {
       walls.forEach(wall => {
         wall.location[2]= player.location[2];
       });
-      // tracks.push(Basic(gl, 0.7, 0, t,0.25 ,100.5 ,0.12));
-      // tracks.push(Basic(gl, -0.7, 0, t,0.25 ,100.5 ,0.12));
-      // tracks.push(Basic(gl, 0.0, 0, t,0.25 ,100.5 ,0.12));
-
-
     }
   };
   function drawScene(gl, programInfo, deltaTime) {
-    gl.clearColor(0.2, 0.5, 0.4, 1.0);  // Clear to black, fully opaque
+    gl.clearColor(0.21, 0.35, 0.42, 0.5);  // Clear to black, fully opaque
     gl.clearDepth(1.0);                 // Clear everything
     gl.enable(gl.DEPTH_TEST);           // Enable depth testing
     gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
