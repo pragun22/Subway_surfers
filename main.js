@@ -11,7 +11,8 @@ var boots = [];
 var flying = [];
 var newobs = [];
 var jumpcoins = [];
-alt = [-1.2, 0 ,1.2]
+alt = [-1.2, 0 ,1.2]  
+boots.push(Shoes(gl,0,1,3));
 bridge.push(Bridge(gl,0,0,24,0.9));
 tracks.push(Basic(gl, 1.2, 0, 0,0.35 ,100.5 ,0.12));
 tracks.push(Basic(gl, -1.2, 0, 0,0.35 ,100.5 ,0.12));
@@ -35,6 +36,7 @@ const textures = {
   build : loadTexture(gl,'./images/build3.jpeg'),
   // coin : loadTexture(gl,'./images/lego_red.jpg'),
   coin : loadTexture(gl,'./images/coin2.png'),
+  shoe : loadTexture(gl,'./images/shoes.jpeg'),
   t2 : loadTexture(gl,'./images/t2.jpeg'),
 };
 var speedx = 0;
@@ -149,6 +151,9 @@ function main() {
       coins.forEach(coin => {
         coin.init();
       });
+      boots.forEach(boot => {
+        boot.init();
+      });
     var then = 0;
     function render(now) {
       eye[2]+=speedz;      
@@ -259,6 +264,9 @@ function main() {
     });
     coins.forEach(coin => {
        coin.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.coin);
+    });
+    boots.forEach(boot => {
+       boot.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.shoe);
     });
     // console.log("a")
     // console.log(modelViewMatrix)
