@@ -13,9 +13,12 @@ var flying = [];
 var newobs = [];
 var jumpcoins = [];
 var superjump = false;
-alt = [-1.2, 0 ,1.2]
-trains.push(Train(gl,0,0,10));  
-boots.push(Shoes(gl,0,1,23));
+var isjet = true;
+var theta = 0;
+alt = [-1.2, 0 ,1.2];
+flying.push(Jet(gl,0,0.8,10));
+// trains.push(Train(gl,0,0,10));  
+// boots.push(Shoes(gl,0,1,23));
 // bridge.push(Bridge(gl,0,0,24,0.9));
 tracks.push(Basic(gl, 1.2, 0, 0,0.35 ,100.5 ,0.12));
 tracks.push(Basic(gl, -1.2, 0, 0,0.35 ,100.5 ,0.12));
@@ -23,9 +26,9 @@ tracks.push(Basic(gl, 0.0, 0, 0,0.35 ,100.5 ,0.12));
 walls.push(Basic2(gl,1.5,2,0,0.1,5.0,100.0));
 walls.push(Basic2(gl,-1.5,2,0,0.1,5.0,100.0));
 // obstacle.push(Basic2(gl,0,0,5.5,0.25,0.6,0.1));
-// for(var i = 0 ; i < 4 ; i++){
-//   coins.push(Circle(gl,alt[i%3],0.4,15-i*1.5,0.2,0.05));
-// }
+for(var i = 0 ; i < 4 ; i++){
+  coins.push(Circle(gl,alt[i%3],0.4,15-i*1.5,0.2,0.05));
+}
 var target = [0, 0.6, -0.2]
 var eye = [0, 1.4, -3.1];
 const textures = {
@@ -44,6 +47,7 @@ const textures = {
   shoe : loadTexture(gl,'./images/ts.jpeg'),
   ts : loadTexture(gl,'./images/tt.png'),
   tf : loadTexture(gl,'./images/tf2.jpg'),
+  jet : loadTexture(gl,'./images/jet.jpg')
 };
 var speedx = 0;
 var speedy = 0;
@@ -130,19 +134,19 @@ function main() {
       obstacle.shift();
       obstacle[0].init();
     }, 12 * 1000);
+  setInterval(() => {
+      var a = (Math.floor(Math.random() * 10))%2;
+      var b = (Math.floor(Math.random() * 10) > 5? 1 : -1);
+      bridge.push(Bridge(gl,a*b,0,player.location[2]+24,0.9)); 
+      bridge.shift();
+      bridge[0].init();
+    }, 16 * 1000);
     setInterval(() => {
-        var a = (Math.floor(Math.random() * 10))%2;
-        var b = (Math.floor(Math.random() * 10) > 5? 1 : -1);
-        bridge.push(Bridge(gl,a*b,0,player.location[2]+24,0.9)); 
-        bridge.shift();
-        bridge[0].init();
-      }, 16 * 1000);
-      setInterval(() => {
-        coins = [];
-        for(var i = 0 ; i < 9 ; i++){
-          var a = Math.floor(Math.random() * 10);          
-          coins.push(Circle(gl,alt[(i+a)%3],0.4,player.location[2]+30-i*1.5,0.2));
-        }
+      coins = [];
+      for(var i = 0 ; i < 9 ; i++){
+        var a = Math.floor(Math.random() * 10);          
+        coins.push(Circle(gl,alt[(i+a)%3],player.location[1]+0.4,player.location[2]+30-i*1.5,0.2));
+      }
         coins.forEach(coin => {
           coin.init();
         });
@@ -169,7 +173,16 @@ function main() {
       trains.forEach(train => {
         train.init();
       });
-    var then = 0;
+      flying.forEach(jet => {
+        jet.init();
+      });
+      setTimeout(()=>{
+        isjet = false;
+        player.location[1] = 0;
+        theta = 0;
+        eye[1] = 1.4;
+      },12*1000);
+      var then = 0;
     function render(now) {
       eye[2]+=speedz;      
       target[2]+=speedz;
@@ -215,7 +228,12 @@ function main() {
         player.location[1] = 0;
       } 
     }
-    
+    if(isjet){
+      player.location[1] = 1.2 + 0.2*Math.cos(theta*Math.PI/180);
+      eye[1] = player.location[1] + 1;
+      // console.log(player.location[1])
+      theta += 1;
+    }
     if(temp>0){
       player.location[0]+=speedx;
       if(speedx < 0){
@@ -279,6 +297,9 @@ function main() {
     trains.forEach(train => {
       train.draw(gl, modelViewMatrix, projectionMatrix, programInfo, [textures.tf, textures.ts]);
    });
+   flying.forEach(jet => {
+    jet.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.jet);
+ });
 };
 function initShaderProgram(gl, vsSource, fsSource) {
   const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
