@@ -1,7 +1,7 @@
 
 const canvas = document.querySelector('#glcanvas');
 const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-const player = Player(gl,0,0.5,-0.2);
+const player = Player(gl,0,0.4,-0.2);
 var tracks = [];
 var walls = [];
 var obstacle = [];
@@ -13,19 +13,19 @@ var flying = [];
 var newobs = [];
 var jumpcoins = [];
 var superjump = false;
-var isjet = true;
+var isjet = false;
 var theta = 0;
 alt = [-1.2, 0 ,1.2];
 flying.push(Jet(gl,0,0.8,10));
 // trains.push(Train(gl,0,0,10));  
-// boots.push(Shoes(gl,0,1,23));
+boots.push(Shoes(gl,0,1,23));
 // bridge.push(Bridge(gl,0,0,24,0.9));
 tracks.push(Basic(gl, 1.2, 0, 0,0.35 ,100.5 ,0.12));
 tracks.push(Basic(gl, -1.2, 0, 0,0.35 ,100.5 ,0.12));
 tracks.push(Basic(gl, 0.0, 0, 0,0.35 ,100.5 ,0.12));
 walls.push(Basic2(gl,1.5,2,0,0.1,5.0,100.0));
 walls.push(Basic2(gl,-1.5,2,0,0.1,5.0,100.0));
-// obstacle.push(Basic2(gl,0,0,5.5,0.25,0.6,0.1));
+obstacle.push(Basic2(gl,0,0,5.5,0.25,0.6,0.1));
 for(var i = 0 ; i < 4 ; i++){
   coins.push(Circle(gl,alt[i%3],0.4,15-i*1.5,0.2,0.05));
 }
@@ -178,7 +178,7 @@ function main() {
       });
       setTimeout(()=>{
         isjet = false;
-        player.location[1] = 0;
+        player.location[1] = 0.4;
         theta = 0;
         eye[1] = 1.4;
       },12*1000);
@@ -208,6 +208,7 @@ function main() {
         }
       });
       tick();
+      detect();
       now *= 0.001;  // convert to seconds
       const deltaTime = now - then;
       then = now;
@@ -222,14 +223,14 @@ function main() {
     if(isjump==1){
       player.location[1]+=speedy;
       speedy -= 0.002;
-      if(player.location[1] < 0 ){
+      if(player.location[1] < 0.4 ){
         isjump = 0;
         speedy = 0;
-        player.location[1] = 0;
+        player.location[1] = 0.4;
       } 
     }
     if(isjet){
-      player.location[1] = 1.2 + 0.2*Math.cos(theta*Math.PI/180);
+      player.location[1] = 1.8 + 0.2*Math.cos(theta*Math.PI/180);
       eye[1] = player.location[1] + 1;
       // console.log(player.location[1])
       theta += 1;
@@ -252,6 +253,25 @@ function main() {
         wall.location[2]= player.location[2];
       });
     }
+    obstacle.forEach(obs => {
+      obs.init();
+    });
+    bridge.forEach(br => {
+      br.init();
+    });
+    coins.forEach(coin => {
+      coin.init();
+    });
+    boots.forEach(boot => {
+      boot.init();
+    });
+    trains.forEach(train => {
+      train.init();
+    });
+    flying.forEach(jet => {
+      jet.init();
+    });
+
   };
   function drawScene(gl, programInfo, deltaTime) {
     gl.clearColor(0.21, 0.35, 0.42, 0.5);  // Clear to black, fully opaque
@@ -301,6 +321,95 @@ function main() {
     jet.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.jet);
  });
 };
+function detect(){
+  var bound_player = {
+    x : player.location[0]-1/6.0,
+    y : player.location[1]-1.25/6.0,
+    z : player.location[2]-1/6.0,
+    width : 2/6.0,
+    depth : 2/6.0,
+    height : 2.5/6.0,
+  };
+  obstacle.forEach(obs => {
+    var det = {
+    x : obs.location[0]-0.25,
+    y : obs.location[1]-0.6,
+    z : obs.location[2]-0.1,
+    width : 0.5,
+    depth : 0.2,
+    height : 1.2,
+    };
+    if (detect_collision(det,bound_player)){
+      console.log('true with obs');
+    }
+  });
+  bridge.forEach(br => {
+  });
+  coins.forEach(coin => {
+    var det = {
+      x : coin.location[0]-0.2,
+      y : coin.location[1]-0.2,
+      z : coin.location[2],
+      width : 0.4,
+      depth : 0.05,
+      height : 0.4,
+      };
+      if (detect_collision(det,bound_player)){
+        console.log('true with coins');
+      }
+  });
+  boots.forEach(boot => {
+    var det = {
+      x : boot.location[0]-0.1,
+      y : boot.location[1]-0.2,
+      z : boot.location[2],
+      width : 0.2,
+      depth : 0.2,
+      height : 0.3,
+      };
+      if (detect_collision(det,bound_player)){
+        console.log('true with boots');
+      }
+  });
+  trains.forEach(train => {
+    // var det = {
+    //   x : coin.location[0]-0.2,
+    //   y : coin.location[1]-0.2,
+    //   z : coin.location[2],
+    //   width : 0.4,
+    //   depth : 0.05,
+    //   height : 0.4,
+    //   };
+    //   if (detect_collision(det,bound_player)){
+    //     console.log('true with coins');
+    //   }
+  });
+  flying.forEach(jet => {
+    // var det = {
+    //   x : coin.location[0]-0.2,
+    //   y : coin.location[1]-0.2,
+    //   z : coin.location[2],
+    //   width : 0.4,
+    //   depth : 0.05,
+    //   height : 0.4,
+    //   };
+    //   if (detect_collision(det,bound_player)){
+    //     console.log('true with coins');
+    //   }
+  }); 
+}
+function detect_collision(a,b) {
+  var x = a.x + a.width >= b.x && b.x + b.width >= a.x?true:false;
+  var y = a.y + a.height >= b.y && b.y + b.height >= a.y?true:false;       
+  var z = a.z + a.depth >= b.z && b.z + b.depth >= a.z?true:false; 
+  // console.log(x);
+  // console.log("x");
+  // console.log(y);
+  // console.log("y");
+  // console.log(z);
+  // console.log("z");
+  return (x && y && z);      
+}
 function initShaderProgram(gl, vsSource, fsSource) {
   const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
   const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
