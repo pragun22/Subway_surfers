@@ -18,35 +18,82 @@ function Circle(gl,x,y,z,r) {
 		position.push(r*Math.cos(angle));
 		position.push(r*Math.sin(angle));
 		position.push(0);
+		position.push(r*Math.cos(angle));
+		position.push(r*Math.sin(angle));
+		position.push(0.05);
+		position.push(r*Math.cos(2*Math.PI*+(inc+1)/n));
+		position.push(r*Math.sin(2*Math.PI*+(inc+1)/n));
+		position.push(0);
+		inc++;
+    }
+    inc = 0;
+    for (var i = 0; i < 9*n; i+=9)
+    {
+		var angle = 2*Math.PI*inc/n;
+		position.push(r*Math.cos(angle));
+		position.push(r*Math.sin(angle));
+		position.push(0);
 		position.push(0);
 		position.push(0);
 		position.push(0);
 		position.push(r*Math.cos(2*Math.PI*+(inc+1)/n));
 		position.push(r*Math.sin(2*Math.PI*+(inc+1)/n));
 		position.push(0);
-		inc++;
-	}
-    
+        inc++;
+    }
+    inc = 0;
+    for (var i = 0; i < 9*n; i+=9)
+    {
+		var angle = 2*Math.PI*inc/n;
+		position.push(r*Math.cos(angle));
+		position.push(r*Math.sin(angle));
+		position.push(0.05);
+		position.push(r*Math.cos(2*Math.PI*+(inc+1)/n));
+		position.push(r*Math.sin(2*Math.PI*+(inc+1)/n));
+		position.push(0);
+		position.push(r*Math.cos(2*Math.PI*+(inc+1)/n));
+		position.push(r*Math.sin(2*Math.PI*+(inc+1)/n));
+		position.push(0.05);
+        inc++;
+    }
+    inc = 0;
+    for (var i = 0; i < 9*n; i+=9)
+    {
+		var angle = 2*Math.PI*inc/n;
+		position.push(r*Math.cos(angle));
+		position.push(r*Math.sin(angle));
+		position.push(0.05);
+		position.push(0);
+		position.push(0);
+		position.push(0.05);
+		position.push(r*Math.cos(2*Math.PI*+(inc+1)/n));
+		position.push(r*Math.sin(2*Math.PI*+(inc+1)/n));
+		position.push(0.05);
+        inc++;
+    }
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(position), gl.STATIC_DRAW);
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
       var indices = [];
-      for(var i = 0 ; i<9*n ; i++){
+      for(var i = 0 ; i<36*n ; i++){
           indices.push(i);
       }
       gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,
         new Uint16Array(indices), gl.STATIC_DRAW);
         gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
         var textureCoordinates = []
-        for(var i = 0 ; i < 3*n ; i+=3){
-            textureCoordinates.push(0);
-            textureCoordinates.push(0);
+        inc = 0;
+        for(var i = 0 ; i < 4*n ; i++){
+            var angle = 2*Math.PI*inc/n;
+            
+            textureCoordinates.push(0.5 - 0.5*Math.cos(angle));
+            textureCoordinates.push(0.5 - 0.5*Math.sin(angle));
+            
+            textureCoordinates.push(0.5);
+            textureCoordinates.push(0.5);
 
-            textureCoordinates.push(0);
-            textureCoordinates.push(1);
-
-            textureCoordinates.push(1);
-            textureCoordinates.push(1);
-
+            textureCoordinates.push(0.5 - 0.5*Math.cos(2*Math.PI*+(inc+1)/n));
+            textureCoordinates.push(0.5 - 0.5*Math.sin(2*Math.PI*+(inc+1)/n));
+            inc++;
         }
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates),
         gl.STATIC_DRAW);
@@ -54,17 +101,17 @@ function Circle(gl,x,y,z,r) {
         gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
     
         var vertexNormals = [];
-        for (var i = 0; i < 9*n; i+=9)
+        for (var i = 0; i < 4*n; i++)
         {
             vertexNormals.push(0);
             vertexNormals.push(0);
-            vertexNormals.push(1);
-            vertexNormals.push(0);
-            vertexNormals.push(1);
+            vertexNormals.push(-1);
             vertexNormals.push(0);
             vertexNormals.push(0);
+            vertexNormals.push(-1);
             vertexNormals.push(0);
-            vertexNormals.push(1);
+            vertexNormals.push(0);
+            vertexNormals.push(-1);
         }
     
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals),
@@ -147,7 +194,7 @@ function Circle(gl,x,y,z,r) {
           gl.enableVertexAttribArray(
             programInfo.attribLocations.vertexNormal);
           }      
-        gl.drawElements(gl.TRIANGLES, 40*9, gl.UNSIGNED_SHORT, 0);
+        gl.drawElements(gl.TRIANGLES, 40*18*2, gl.UNSIGNED_SHORT, 0);
         return gl;
     };
   

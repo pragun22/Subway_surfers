@@ -7,6 +7,10 @@ var walls = [];
 var obstacle = [];
 var bridge = [];
 var coins = [];
+var boots = [];
+var flying = [];
+var newobs = [];
+var jumpcoins = [];
 alt = [-1.2, 0 ,1.2]
 bridge.push(Bridge(gl,0,0,24,0.9));
 tracks.push(Basic(gl, 1.2, 0, 0,0.35 ,100.5 ,0.12));
@@ -29,8 +33,8 @@ const textures = {
   wall: loadTexture(gl,'./images/tron_wall3.JPG'),
   hurdle : loadTexture(gl,'./images/hurdle3.jpeg'),
   build : loadTexture(gl,'./images/build3.jpeg'),
-  coin : loadTexture(gl,'./images/lego_red.jpg'),
-  // coin : loadTexture(gl,'./images/coin.png'),
+  // coin : loadTexture(gl,'./images/lego_red.jpg'),
+  coin : loadTexture(gl,'./images/coin2.png'),
   t2 : loadTexture(gl,'./images/t2.jpeg'),
 };
 var speedx = 0;
