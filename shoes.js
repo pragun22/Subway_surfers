@@ -7,8 +7,9 @@ function Shoes(gl,x,y,z) {
   var rotation_ob = 0
 	const textureCoordBuffer = gl.createBuffer();
   var primitives = [];
-  primitives.push(Basic2(gl, 0, 0, 0, 0.5, 1, 0.5));
-  primitives.push(Basic2(gl, -1, -0.5, 0, 0.5, 0.5, 0.5));
+  var sc = 0.2;
+  primitives.push(Basic2(gl, 0, 0, 0, 0.5*0.2, 1*0.2, 0.5*0.2));
+  primitives.push(Basic2(gl, -1*0.2, -0.5*0.2, 0, 0.5*0.2, 0.5*0.2, 0.5*0.2));
   let init = () =>{
     primitives.forEach( prim => {
       prim.init();
@@ -23,10 +24,10 @@ function Shoes(gl,x,y,z) {
       mat4.rotate(modelViewMatrix,
       modelViewMatrix,
       rotation_ob,
-      [0, 1, 0]);
-      mat4.scale(modelViewMatrix,
-        modelViewMatrix,
-        [0.2,0.2,0.2]);
+      [1, 1, 0]);
+      // mat4.scale(modelViewMatrix,
+      //   modelViewMatrix,
+      //   [0.2,0.2,0.2]);
       primitives.forEach( (prim) => {
         gl = prim.draw(gl,modelViewMatrix,projectionMatrix,programInfo,textures,[0.1, 0.1, 0.1]);
         // prim.tick();

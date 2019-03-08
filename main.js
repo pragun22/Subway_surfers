@@ -12,7 +12,7 @@ var flying = [];
 var newobs = [];
 var jumpcoins = [];
 alt = [-1.2, 0 ,1.2]  
-boots.push(Shoes(gl,0,1,3));
+boots.push(Shoes(gl,0,1,23));
 bridge.push(Bridge(gl,0,0,24,0.9));
 tracks.push(Basic(gl, 1.2, 0, 0,0.35 ,100.5 ,0.12));
 tracks.push(Basic(gl, -1.2, 0, 0,0.35 ,100.5 ,0.12));
@@ -37,6 +37,7 @@ const textures = {
   // coin : loadTexture(gl,'./images/lego_red.jpg'),
   coin : loadTexture(gl,'./images/coin2.png'),
   shoe : loadTexture(gl,'./images/shoes.jpeg'),
+  // shoe : loadTexture(gl,'./images/shoes.jpg'),
   t2 : loadTexture(gl,'./images/t2.jpeg'),
 };
 var speedx = 0;
