@@ -6,54 +6,54 @@ function Circle(gl,x,y,z,r) {
     const normalBuffer = gl.createBuffer();
     const textureCoordBuffer = gl.createBuffer();
     var rot = 0;
-  let init = () =>{
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    var n = 40;
-    var inc = 0;
-    var position = []
-    for (var i = 0; i < 9*n; i+=9)
-	{
-		var angle = 2*Math.PI*inc/n;
-		// if(inc==n) angle = 0;
-		position.push(r*Math.cos(angle));
-		position.push(r*Math.sin(angle));
-		position.push(0);
-		position.push(r*Math.cos(angle));
-		position.push(r*Math.sin(angle));
-		position.push(0.05);
-		position.push(r*Math.cos(2*Math.PI*+(inc+1)/n));
-		position.push(r*Math.sin(2*Math.PI*+(inc+1)/n));
-		position.push(0);
-		inc++;
-    }
-    inc = 0;
-    for (var i = 0; i < 9*n; i+=9)
-    {
-		var angle = 2*Math.PI*inc/n;
-		position.push(r*Math.cos(angle));
-		position.push(r*Math.sin(angle));
-		position.push(0);
-		position.push(0);
-		position.push(0);
-		position.push(0);
-		position.push(r*Math.cos(2*Math.PI*+(inc+1)/n));
-		position.push(r*Math.sin(2*Math.PI*+(inc+1)/n));
-		position.push(0);
-        inc++;
-    }
-    inc = 0;
-    for (var i = 0; i < 9*n; i+=9)
-    {
-		var angle = 2*Math.PI*inc/n;
-		position.push(r*Math.cos(angle));
-		position.push(r*Math.sin(angle));
-		position.push(0.05);
-		position.push(r*Math.cos(2*Math.PI*+(inc+1)/n));
-		position.push(r*Math.sin(2*Math.PI*+(inc+1)/n));
-		position.push(0);
-		position.push(r*Math.cos(2*Math.PI*+(inc+1)/n));
-		position.push(r*Math.sin(2*Math.PI*+(inc+1)/n));
-		position.push(0.05);
+    let init = () =>{
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        var n = 40;
+        var inc = 0;
+        var position = []
+        for (var i = 0; i < 9*n; i+=9)
+        {
+            var angle = 2*Math.PI*inc/n;
+            // if(inc==n) angle = 0;
+            position.push(r*Math.cos(angle));
+            position.push(r*Math.sin(angle));
+            position.push(0);
+            position.push(r*Math.cos(angle));
+            position.push(r*Math.sin(angle));
+            position.push(0.05);
+            position.push(r*Math.cos(2*Math.PI*+(inc+1)/n));
+            position.push(r*Math.sin(2*Math.PI*+(inc+1)/n));
+            position.push(0);
+            inc++;
+        }
+        inc = 0;
+        for (var i = 0; i < 9*n; i+=9)
+        {
+            var angle = 2*Math.PI*inc/n;
+            position.push(r*Math.cos(angle));
+            position.push(r*Math.sin(angle));
+            position.push(0);
+            position.push(0);
+            position.push(0);
+            position.push(0);
+            position.push(r*Math.cos(2*Math.PI*+(inc+1)/n));
+            position.push(r*Math.sin(2*Math.PI*+(inc+1)/n));
+            position.push(0);
+            inc++;
+        }
+        inc = 0;
+        for (var i = 0; i < 9*n; i+=9)
+        {
+        var angle = 2*Math.PI*inc/n;
+        position.push(r*Math.cos(angle));
+        position.push(r*Math.sin(angle));
+        position.push(0.05);
+        position.push(r*Math.cos(2*Math.PI*+(inc+1)/n));
+        position.push(r*Math.sin(2*Math.PI*+(inc+1)/n));
+        position.push(0);
+        position.push(r*Math.cos(2*Math.PI*+(inc+1)/n));
+        position.push(r*Math.sin(2*Math.PI*+(inc+1)/n));
+        position.push(0.05);
         inc++;
     }
     inc = 0;
@@ -105,25 +105,25 @@ function Circle(gl,x,y,z,r) {
         {
             vertexNormals.push(0);
             vertexNormals.push(0);
-            vertexNormals.push(1);
+            vertexNormals.push(-1);
             vertexNormals.push(0);
             vertexNormals.push(0);
-            vertexNormals.push(1);
+            vertexNormals.push(-1);
             vertexNormals.push(0);
             vertexNormals.push(0);
-            vertexNormals.push(1);
+            vertexNormals.push(-1);
         }
         for (var i = 0; i < 2*n; i++)
         {
             vertexNormals.push(0);
             vertexNormals.push(0);
-            vertexNormals.push(-1);
+            vertexNormals.push(1);
             vertexNormals.push(0);
             vertexNormals.push(0);
-            vertexNormals.push(-1);
+            vertexNormals.push(1);
             vertexNormals.push(0);
             vertexNormals.push(0);
-            vertexNormals.push(-1);
+            vertexNormals.push(1);
         }
 
     
@@ -212,7 +212,7 @@ function Circle(gl,x,y,z,r) {
     };
   
     let tick = () => {
-      rot += 0.07
+      rot += 0.06
     };
     return {
       location: location,

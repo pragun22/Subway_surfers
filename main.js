@@ -11,6 +11,7 @@ var boots = [];
 var flying = [];
 var newobs = [];
 var jumpcoins = [];
+var superjump = false;
 alt = [-1.2, 0 ,1.2]  
 boots.push(Shoes(gl,0,1,23));
 bridge.push(Bridge(gl,0,0,24,0.9));
@@ -31,6 +32,7 @@ const textures = {
   legyel: loadTexture(gl,'./images/lego_yellow.jpeg'),
   legbl: loadTexture(gl,'./images/lego_blue.jpeg'),
   leggr: loadTexture(gl,'./images/lego_green.jpg'),
+  legbr: loadTexture(gl,'./images/lego_brown.jpg'),
   wall: loadTexture(gl,'./images/tron_wall3.JPG'),
   hurdle : loadTexture(gl,'./images/hurdle3.jpeg'),
   build : loadTexture(gl,'./images/build3.jpeg'),
@@ -111,6 +113,12 @@ function main() {
       },
     };
     setInterval(() => {
+      var inc = (Math.floor(Math.random() * 10))%3;
+      boots.push(Shoes(gl,alt[inc],1,player.location[2]+11)); 
+      boots.shift();
+      boots[0].init();
+  }, 29 * 1000);
+    setInterval(() => {
       speedz += 0.05;
       mag_time += 0.003;
   }, 30 * 1000);
@@ -177,7 +185,7 @@ function main() {
       Mousetrap.bind(["w", "space"], () => {
         if(isjump==0) {
           isjump = 1;
-          speedy = 0.055;
+          superjump?speedy=0.075:speedy = 0.055;
         }
       });
       tick();
@@ -234,7 +242,7 @@ function main() {
     gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    const fieldOfView = 45 * Math.PI / 180;   // in radians
+    const fieldOfView = 60 * Math.PI / 180;   // in radians
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     const zNear = 0.1;
     const zFar = 100.0;
@@ -247,7 +255,8 @@ function main() {
                       
     var modelViewMatrix = mat4.create();
     mat4.lookAt(modelViewMatrix, eye, target, [0, 1, 0]);
-    tex = [textures.legyel,textures.legbl,textures.leggr]
+
+    superjump ? tex = [textures.legyel,textures.legbl,textures.legbr] :tex = [textures.legyel,textures.legbl,textures.leggr]
     player.draw(gl, modelViewMatrix,projectionMatrix, programInfo,tex);
     bridge.forEach(obs => {
       obs.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.build);
