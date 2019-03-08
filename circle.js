@@ -101,7 +101,19 @@ function Circle(gl,x,y,z,r) {
         gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
     
         var vertexNormals = [];
-        for (var i = 0; i < 4*n; i++)
+        for (var i = 0; i < 2*n; i++)
+        {
+            vertexNormals.push(0);
+            vertexNormals.push(0);
+            vertexNormals.push(1);
+            vertexNormals.push(0);
+            vertexNormals.push(0);
+            vertexNormals.push(1);
+            vertexNormals.push(0);
+            vertexNormals.push(0);
+            vertexNormals.push(1);
+        }
+        for (var i = 0; i < 2*n; i++)
         {
             vertexNormals.push(0);
             vertexNormals.push(0);
@@ -113,6 +125,7 @@ function Circle(gl,x,y,z,r) {
             vertexNormals.push(0);
             vertexNormals.push(-1);
         }
+
     
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals),
         gl.STATIC_DRAW);
@@ -157,7 +170,7 @@ function Circle(gl,x,y,z,r) {
   
         gl.useProgram(programInfo.program);
         const normalMatrix = mat4.create();
-            mat4.invert(normalMatrix, modelViewMatrix);
+        mat4.invert(normalMatrix, modelViewMatrix);
         mat4.transpose(normalMatrix, normalMatrix);
         
         gl.uniformMatrix4fv(
