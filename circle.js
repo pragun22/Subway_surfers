@@ -1,4 +1,4 @@
-function Circle(gl,x,y,z,r) {
+function Circle(gl,x,y,z,r,h) {
     var location = [x,y,z]
     const positionBuffer = gl.createBuffer();
     const indexBuffer = gl.createBuffer();  
@@ -20,7 +20,7 @@ function Circle(gl,x,y,z,r) {
             position.push(0);
             position.push(r*Math.cos(angle));
             position.push(r*Math.sin(angle));
-            position.push(0.05);
+            position.push(h);
             position.push(r*Math.cos(2*Math.PI*+(inc+1)/n));
             position.push(r*Math.sin(2*Math.PI*+(inc+1)/n));
             position.push(0);
@@ -47,13 +47,13 @@ function Circle(gl,x,y,z,r) {
         var angle = 2*Math.PI*inc/n;
         position.push(r*Math.cos(angle));
         position.push(r*Math.sin(angle));
-        position.push(0.05);
+        position.push(h);
         position.push(r*Math.cos(2*Math.PI*+(inc+1)/n));
         position.push(r*Math.sin(2*Math.PI*+(inc+1)/n));
         position.push(0);
         position.push(r*Math.cos(2*Math.PI*+(inc+1)/n));
         position.push(r*Math.sin(2*Math.PI*+(inc+1)/n));
-        position.push(0.05);
+        position.push(h);
         inc++;
     }
     inc = 0;
@@ -62,13 +62,13 @@ function Circle(gl,x,y,z,r) {
 		var angle = 2*Math.PI*inc/n;
 		position.push(r*Math.cos(angle));
 		position.push(r*Math.sin(angle));
-		position.push(0.05);
+		position.push(h);
 		position.push(0);
 		position.push(0);
-		position.push(0.05);
+		position.push(h);
 		position.push(r*Math.cos(2*Math.PI*+(inc+1)/n));
 		position.push(r*Math.sin(2*Math.PI*+(inc+1)/n));
-		position.push(0.05);
+		position.push(h);
         inc++;
     }
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(position), gl.STATIC_DRAW);

@@ -8,22 +8,24 @@ var obstacle = [];
 var bridge = [];
 var coins = [];
 var boots = [];
+var trains = [];
 var flying = [];
 var newobs = [];
 var jumpcoins = [];
 var superjump = false;
-alt = [-1.2, 0 ,1.2]  
+alt = [-1.2, 0 ,1.2]
+trains.push(Train(gl,0,0,10));  
 boots.push(Shoes(gl,0,1,23));
-bridge.push(Bridge(gl,0,0,24,0.9));
+// bridge.push(Bridge(gl,0,0,24,0.9));
 tracks.push(Basic(gl, 1.2, 0, 0,0.35 ,100.5 ,0.12));
 tracks.push(Basic(gl, -1.2, 0, 0,0.35 ,100.5 ,0.12));
 tracks.push(Basic(gl, 0.0, 0, 0,0.35 ,100.5 ,0.12));
 walls.push(Basic2(gl,1.5,2,0,0.1,5.0,100.0));
 walls.push(Basic2(gl,-1.5,2,0,0.1,5.0,100.0));
-obstacle.push(Basic2(gl,0,0,5.5,0.25,0.6,0.1));
-for(var i = 0 ; i < 4 ; i++){
-  coins.push(Circle(gl,alt[i%3],0.4,15-i*1.5,0.2));
-}
+// obstacle.push(Basic2(gl,0,0,5.5,0.25,0.6,0.1));
+// for(var i = 0 ; i < 4 ; i++){
+//   coins.push(Circle(gl,alt[i%3],0.4,15-i*1.5,0.2,0.05));
+// }
 var target = [0, 0.6, -0.2]
 var eye = [0, 1.4, -3.1];
 const textures = {
@@ -38,9 +40,10 @@ const textures = {
   build : loadTexture(gl,'./images/build3.jpeg'),
   // coin : loadTexture(gl,'./images/lego_red.jpg'),
   coin : loadTexture(gl,'./images/coin2.png'),
-  shoe : loadTexture(gl,'./images/shoes.jpeg'),
-  // shoe : loadTexture(gl,'./images/shoes.jpg'),
-  t2 : loadTexture(gl,'./images/t2.jpeg'),
+  // shoe : loadTexture(gl,'./images/shoes.jpeg'),
+  shoe : loadTexture(gl,'./images/ts.jpeg'),
+  ts : loadTexture(gl,'./images/tt.png'),
+  tf : loadTexture(gl,'./images/tf2.jpg'),
 };
 var speedx = 0;
 var speedy = 0;
@@ -163,6 +166,9 @@ function main() {
       boots.forEach(boot => {
         boot.init();
       });
+      trains.forEach(train => {
+        train.init();
+      });
     var then = 0;
     function render(now) {
       eye[2]+=speedz;      
@@ -221,10 +227,6 @@ function main() {
     };
     if ( player.location[2] - tracks[0].location[2] > 20 ){
       var t = player.location[2];      
-      // tracks.push(Basic(gl, 1.2, 0, 0,0.35 ,t+20 ,0.12));
-      // tracks.push(Basic(gl, -1.2, 0, 0,0.35 ,t+20 ,0.12));
-      // tracks.push(Basic(gl, 0.0, 0, 0,0.35 ,t+20 ,0.12));
-      
       tracks.forEach(track => {
         track.location[2]= player.location[2];
       });
@@ -232,8 +234,6 @@ function main() {
         wall.location[2]= player.location[2];
       });
     }
-    // eye[0] = 3*player.location[0]/5;
-    // target[0] = 3*player.location[0]/5;
   };
   function drawScene(gl, programInfo, deltaTime) {
     gl.clearColor(0.21, 0.35, 0.42, 0.5);  // Clear to black, fully opaque
@@ -257,17 +257,15 @@ function main() {
     mat4.lookAt(modelViewMatrix, eye, target, [0, 1, 0]);
 
     superjump ? tex = [textures.legyel,textures.legbl,textures.legbr] :tex = [textures.legyel,textures.legbl,textures.leggr]
+    walls.forEach(wall => {
+      wall.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.wall);
+    });
     player.draw(gl, modelViewMatrix,projectionMatrix, programInfo,tex);
     bridge.forEach(obs => {
       obs.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.build);
     });
-    // console.log(modelViewMatrix)
-    // console.log("b")
     tracks.forEach(track => {
       track.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.rail);
-    });
-    walls.forEach(wall => {
-      wall.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.wall);
     });
     obstacle.forEach(obs => {
        obs.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.hurdle);
@@ -278,15 +276,9 @@ function main() {
     boots.forEach(boot => {
        boot.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.shoe);
     });
-    // console.log("a")
-    // console.log(modelViewMatrix)
-    // tracks.forEach(track => {
-    //   track.tick();
-    // });
-    coins.forEach(coin => {
-      coin.tick();
-    });
-    player.tick();
+    trains.forEach(train => {
+      train.draw(gl, modelViewMatrix, projectionMatrix, programInfo, [textures.tf, textures.ts]);
+   });
 };
 function initShaderProgram(gl, vsSource, fsSource) {
   const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
