@@ -1,4 +1,4 @@
-function Basic2(gl,x,y,z,len,hgt,wid) {
+function Wall(gl,x,y,z,len,hgt,wid) {
   var location = [x,y,z]
   const positionBuffer = gl.createBuffer();
   const indexBuffer = gl.createBuffer();  
@@ -174,13 +174,13 @@ let init = () =>{
 
       gl.useProgram(programInfo.program);
       const normalMatrix = mat4.create();
-	  	mat4.invert(normalMatrix, modelViewMatrix);
-      mat4.transpose(normalMatrix, normalMatrix);
+	  	// mat4.invert(normalMatrix, modelViewMatrix);
       // mat4.transpose(normalMatrix, normalMatrix);
-      gl.uniformMatrix4fv(
-        programInfo.uniformLocations.normalMatrix, 
-        false, 
-        normalMatrix);
+      // mat4.transpose(normalMatrix, normalMatrix);
+      // gl.uniformMatrix4fv(
+      //   programInfo.uniformLocations.normalMatrix, 
+      //   false, 
+      //   normalMatrix);
       gl.uniformMatrix4fv(
           programInfo.uniformLocations.projectionMatrix,
           false,
@@ -194,23 +194,23 @@ let init = () =>{
       let bind_texture = texture;
       gl.bindTexture(gl.TEXTURE_2D, bind_texture);
       gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
-      {
-        const numComponents = 3;
-        const type = gl.FLOAT;
-        const normalize = false;
-        const stride = 0;
-        const offset = 0;
-        gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-        gl.vertexAttribPointer(
-          programInfo.attribLocations.vertexNormal,
-          numComponents,
-          type,
-          normalize,
-          stride,
-          offset);
-        gl.enableVertexAttribArray(
-          programInfo.attribLocations.vertexNormal);
-        }      
+      // {
+      //   const numComponents = 3;
+      //   const type = gl.FLOAT;
+      //   const normalize = false;
+      //   const stride = 0;
+      //   const offset = 0;
+      //   gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+      //   gl.vertexAttribPointer(
+      //     programInfo.attribLocations.vertexNormal,
+      //     numComponents,
+      //     type,
+      //     normalize,
+      //     stride,
+      //     offset);
+      //   gl.enableVertexAttribArray(
+      //     programInfo.attribLocations.vertexNormal);
+      //   }      
       gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0);
       return gl;
   };

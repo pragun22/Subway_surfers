@@ -212,7 +212,7 @@ function Circle(gl,x,y,z,r,h) {
     };
   
     let tick = () => {
-      rot += 0.06
+      rot += 0.09
     };
     return {
       location: location,

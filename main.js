@@ -2,6 +2,7 @@
 const canvas = document.querySelector('#glcanvas');
 const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 const player = Player(gl,0,0.4,-0.2);
+const police = Player(gl,0,0.4,1);
 var tracks = [];
 var walls = [];
 var obstacle = [];
@@ -19,14 +20,14 @@ var theta = 0;
 var train_stand = false;
 alt = [-1.2, 0 ,1.2];
 flying.push(Jet(gl,0,0.8,10));
-// trains.push(Train(gl,0,0,20));  
+trains.push(Train(gl,0,0,35));  
 boots.push(Shoes(gl,0,1,13));
 bridge.push(Bridge(gl,-1,0,24,0.9));
 tracks.push(Basic(gl, 1.2, 0, 0,0.35 ,100.5 ,0.12));
 tracks.push(Basic(gl, -1.2, 0, 0,0.35 ,100.5 ,0.12));
 tracks.push(Basic(gl, 0.0, 0, 0,0.35 ,100.5 ,0.12));
-walls.push(Basic2(gl,1.5,2,0,0.1,5.0,100.0));
-walls.push(Basic2(gl,-1.5,2,0,0.1,5.0,100.0));
+walls.push(Wall(gl,1.5,2,0,0.1,5.0,100.0));
+walls.push(Wall(gl,-1.5,2,0,0.1,5.0,100.0));
 obstacle.push(Basic2(gl,0,0,5.5,0.25,0.6,0.1));
 for(var i = 0 ; i < 4 ; i++){
   coins.push(Circle(gl,alt[i%3],0.4,15-i*1.5,0.2,0.05));
@@ -153,6 +154,11 @@ function main() {
       obstacle.shift();
       obstacle[0].init();
     }, 13 * 1000);
+    setInterval(() => {
+      flying.push(Jet(gl,0,0.8,player.location[2]+14));
+      flying.shift();
+      flying[0].init();
+    }, 13 * 1000);
   setInterval(() => {
       var a = (Math.floor(Math.random() * 10))%2;
       var b = (Math.floor(Math.random() * 10) > 5? 1 : -1);
@@ -203,17 +209,21 @@ function main() {
         target[2]+=speedz;
         player.location[2] +=speedz;
         Mousetrap.bind(["left", "a"], () => {
-          speedx = 0.05+mag_time;
-          temp = 1.2
+          if(temp == 0)
+          {
+            speedx = 0.065+mag_time;
+            temp = 1.2
+          }
         });
         Mousetrap.bind(["d", "right"], () => {
-          
-          speedx = -0.05-mag_time;
-          temp = 1.2
+          if(temp==0)
+          {
+            speedx = -0.065-mag_time;
+            temp = 1.2
+          }          
         });
         Mousetrap.bind(["g"], () => {
           shad ^= 1;
-          console.log(shad);
           shaderProgram = initShaderProgram(gl, vsSource, fsSource[shad]);   
           programInfo = {
             program: shaderProgram,
@@ -266,11 +276,16 @@ function main() {
         } 
       }
     }
+    else{
+      eye[1] = player.location[1]+0.6;
+    }
     if(isjet){
-      player.location[1] = 1.8 + 0.2*Math.cos(theta*Math.PI/180);
-      eye[1] = player.location[1]+0.1;
-      // console.log(player.location[1])
-      theta += 1;
+      player.location[1] = 2 + 0.2*Math.cos(theta*Math.PI/180);
+      flying[0].location[0] = player.location[0];
+      flying[0].location[1] = player.location[1];
+      flying[0].location[2] = player.location[2];
+      flying[0].location[2] -=1/6.0;
+      theta += 2;
     }
     if(temp>0){
       player.location[0]+=speedx;
@@ -280,6 +295,7 @@ function main() {
       else{
         temp-=speedx;
       } 
+      if(temp < 0) temp = 0;
     };
     if ( player.location[2] - tracks[0].location[2] > 20 ){
       var t = player.location[2];      
@@ -313,6 +329,10 @@ function main() {
       
       var modelViewMatrix = mat4.create();
       mat4.lookAt(modelViewMatrix, eye, target, [0, 1, 0]);
+    coins.forEach(coin => {
+      coin.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.coin);
+      coin.tick();
+    });
       
       superjump ? tex = [textures.legyel,textures.legbl,textures.legbr] :tex = [textures.legyel,textures.legbl,textures.leggr]
       walls.forEach(wall => {
@@ -327,10 +347,6 @@ function main() {
     });
     obstacle.forEach(obs => {
       obs.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.hurdle);
-    });
-    coins.forEach(coin => {
-      coin.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.coin);
-      coin.tick();
     });
     boots.forEach(boot => {
       boot.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.shoe);
@@ -454,11 +470,13 @@ function main() {
       };
       if (detect_collision(det,bound_player)){
         isjet = true;
+        isjump = 0;
         setTimeout(()=>{
           isjet = false;
-          player.location[1] = 0.4;
+          // player.location[1] = 0.4;
+          isjump = 1;
           theta = 0;
-          eye[1] = 1.4;
+          // eye[1] = 1.4;
         },12*1000);
       }
   }); 
