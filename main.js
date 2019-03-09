@@ -57,6 +57,7 @@ var speedz = 0.05;
 var isjump = 0;
 var mag_time = 0;
 var temp = 0;
+var shad = 0;
 main();
 function main() {
   if (!gl) {
@@ -93,7 +94,8 @@ function main() {
   `;
 
   // Fragment shader program
-  const fsSource = `
+  var fsSource= []
+  fsSource.push(`
   varying highp vec2 vTextureCoord;
   varying highp vec3 vLighting;
 
@@ -104,10 +106,25 @@ function main() {
 
     gl_FragColor = vec4(texelColor.rgb * vLighting, texelColor.a);
   }
-  `;
+  `);
+  fsSource.push(`
+  varying highp vec2 vTextureCoord;
+  varying highp vec3 vLighting;
 
-    const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
-    const programInfo = {
+  uniform sampler2D uSampler;
+
+  void main(void) {
+    highp vec4 texelColor = texture2D(uSampler, vTextureCoord);
+    precision highp float;
+    vec4 color = texture2D(uSampler, vTextureCoord);
+    float gray = dot(color.rgb, vec3(0.299,0.587,0.114));
+    gl_FragColor = vec4(texelColor.rgb * vLighting, texelColor.a);
+    gl_FragColor = vec4(vec3(gray),1.0);
+  }
+  `);
+
+    var shaderProgram = initShaderProgram(gl, vsSource, fsSource[0]);
+    var programInfo = {
       program: shaderProgram,
       attribLocations: {
         vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
@@ -194,6 +211,25 @@ function main() {
           speedx = -0.05-mag_time;
           temp = 1.2
         });
+        Mousetrap.bind(["g"], () => {
+          shad ^= 1;
+          console.log(shad);
+          shaderProgram = initShaderProgram(gl, vsSource, fsSource[shad]);   
+          programInfo = {
+            program: shaderProgram,
+            attribLocations: {
+              vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
+              vertexNormal: gl.getAttribLocation(shaderProgram, 'aVertexNormal'),
+              textureCoord: gl.getAttribLocation(shaderProgram, 'aTextureCoord'),
+            },
+            uniformLocations: {
+              projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
+              modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
+              normalMatrix: gl.getUniformLocation(shaderProgram, 'uNormalMatrix'),
+              uSampler: gl.getUniformLocation(shaderProgram, 'uSampler'),
+            },
+          };   
+        });
         Mousetrap.bind(["p"], () => {
         eye[2]-=0.05;
         target[2]-=0.05;
@@ -254,27 +290,6 @@ function main() {
         wall.location[2]= player.location[2];
       });
     }
-    // obstacle.forEach(obs => {
-    //   obs.init();
-    // });
-    // bridge.forEach(br => {
-    //   br.init();
-    // });
-    // coins.forEach(coin => {
-    //   coin.init();
-    // });
-    // boots.forEach(boot => {
-    //   boot.init();
-    // });
-    // trains.forEach(train => {
-    //   train.init();
-    // });
-    // flying.forEach(jet => {
-    //   jet.init();
-    // });
-    // trains.forEach(train => {
-    //   train.init();
-    // });
     // train.location[2] -= speedz;
     
   };
@@ -369,8 +384,6 @@ function main() {
       height : 4,
       depth : 4,
     };
-    console.log(det2);
-    console.log(bound_player);
     if(detect_collision(det,bound_player)){
       alert('wallr');
    }
