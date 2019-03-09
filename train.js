@@ -1,4 +1,4 @@
-function Train(gl,x,y,z) {
+function Train(gl,x,y,z,len) {
   var location = [x, y, z]
   const positionBuffer = gl.createBuffer();
   const indexBuffer = gl.createBuffer();  
@@ -7,9 +7,9 @@ function Train(gl,x,y,z) {
   var rotation_ob = 0
 	const textureCoordBuffer = gl.createBuffer();
   var primitives = [];
-  primitives.push(Circle(gl,0, 1,0,0.30,0.1));
+  primitives.push(Circle(gl,0, 1,0,0.30,len/20.0));
   // primitives.push(Basic2(gl,0,1,0,0.25,0.2,0.1))
-  primitives.push(Basic2(gl, 0, 1, 2.1, 0.25,0.2,2));
+  primitives.push(Basic2(gl, 0, 1, 2.1, 0.25,0.2,len));
   let init = () =>{
     primitives.forEach( prim => {
       prim.init();

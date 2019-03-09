@@ -105,25 +105,25 @@ function Circle(gl,x,y,z,r,h) {
         {
             vertexNormals.push(0);
             vertexNormals.push(0);
-            vertexNormals.push(-1);
+            vertexNormals.push(1);
             vertexNormals.push(0);
             vertexNormals.push(0);
-            vertexNormals.push(-1);
+            vertexNormals.push(1);
             vertexNormals.push(0);
             vertexNormals.push(0);
-            vertexNormals.push(-1);
+            vertexNormals.push(1);
         }
         for (var i = 0; i < 2*n; i++)
         {
             vertexNormals.push(0);
             vertexNormals.push(0);
-            vertexNormals.push(1);
+            vertexNormals.push(-1);
             vertexNormals.push(0);
             vertexNormals.push(0);
-            vertexNormals.push(1);
+            vertexNormals.push(-1);
             vertexNormals.push(0);
             vertexNormals.push(0);
-            vertexNormals.push(1);
+            vertexNormals.push(-1);
         }
 
     
