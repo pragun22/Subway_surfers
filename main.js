@@ -19,9 +19,9 @@ var theta = 0;
 var train_stand = false;
 alt = [-1.2, 0 ,1.2];
 flying.push(Jet(gl,0,0.8,10));
-trains.push(Train(gl,0,0,20));  
+// trains.push(Train(gl,0,0,20));  
 boots.push(Shoes(gl,0,1,13));
-// bridge.push(Bridge(gl,0,0,24,0.9));
+bridge.push(Bridge(gl,-1,0,24,0.9));
 tracks.push(Basic(gl, 1.2, 0, 0,0.35 ,100.5 ,0.12));
 tracks.push(Basic(gl, -1.2, 0, 0,0.35 ,100.5 ,0.12));
 tracks.push(Basic(gl, 0.0, 0, 0,0.35 ,100.5 ,0.12));
@@ -128,14 +128,14 @@ function main() {
       boots[0].init();
   }, 29 * 1000);
     setInterval(() => {
-      speedz += 0.05;
+      speedz += 0.01;
       mag_time += 0.003;
-  }, 30 * 1000);
+  }, 20 * 1000);
   setInterval(() => {
-      obstacle.push(Basic2(gl,0,0,player.location[2]+25.5,0.25,0.6,0.1)); 
+      obstacle.push(Basic2(gl,0,0,player.location[2]+15.5,0.25,0.6,0.1)); 
       obstacle.shift();
       obstacle[0].init();
-    }, 12 * 1000);
+    }, 13 * 1000);
   setInterval(() => {
       var a = (Math.floor(Math.random() * 10))%2;
       var b = (Math.floor(Math.random() * 10) > 5? 1 : -1);
@@ -153,6 +153,8 @@ function main() {
           coin.init();
         });
       }, 20 * 1000);
+
+
       player.init();
       tracks.forEach(track => {
         track.init();
@@ -192,7 +194,7 @@ function main() {
           speedx = -0.05-mag_time;
           temp = 1.2
         });
-        Mousetrap.bind(["s"], () => {
+        Mousetrap.bind(["p"], () => {
         eye[2]-=0.05;
         target[2]-=0.05;
         player.location[2] -= 0.05;
@@ -252,24 +254,28 @@ function main() {
         wall.location[2]= player.location[2];
       });
     }
-    obstacle.forEach(obs => {
-      obs.init();
-    });
-    bridge.forEach(br => {
-      br.init();
-    });
-    coins.forEach(coin => {
-      coin.init();
-    });
-    boots.forEach(boot => {
-      boot.init();
-    });
-    trains.forEach(train => {
-      train.init();
-    });
-    flying.forEach(jet => {
-      jet.init();
-    });
+    // obstacle.forEach(obs => {
+    //   obs.init();
+    // });
+    // bridge.forEach(br => {
+    //   br.init();
+    // });
+    // coins.forEach(coin => {
+    //   coin.init();
+    // });
+    // boots.forEach(boot => {
+    //   boot.init();
+    // });
+    // trains.forEach(train => {
+    //   train.init();
+    // });
+    // flying.forEach(jet => {
+    //   jet.init();
+    // });
+    // trains.forEach(train => {
+    //   train.init();
+    // });
+    // train.location[2] -= speedz;
     
   };
   function drawScene(gl, programInfo, deltaTime) {
@@ -309,6 +315,7 @@ function main() {
     });
     coins.forEach(coin => {
       coin.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.coin);
+      coin.tick();
     });
     boots.forEach(boot => {
       boot.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.shoe);
@@ -321,6 +328,7 @@ function main() {
     });
   };
   function detect(){
+    // console.log(bridge[0].location)
     var bound_player = {
       x : player.location[0]-1/6.0,
       y : player.location[1]-1.25/6.0,
@@ -339,10 +347,37 @@ function main() {
       height : 1.2,
     };
     if (detect_collision(det,bound_player)){
-      console.log('true with obs');
+      speedz -= 0.025;
+      if(speedz < 0.024) alert('bhai khelna seekhle');
+      obs.location[1] = 4;
     }
   });
   bridge.forEach(br => {
+    var det = {
+      x : br.location[0]-2.3,
+      y : br.location[1]-2,
+      z : br.location[2]-2,
+      width : 1.8,
+      height : 4,
+      depth : 4,
+    };
+    var det2 = {
+      x : br.location[0]+0.9,
+      y : br.location[1]-2,
+      z : br.location[2]-2,
+      width : 1.8,
+      height : 4,
+      depth : 4,
+    };
+    console.log(det2);
+    console.log(bound_player);
+    if(detect_collision(det,bound_player)){
+      alert('wallr');
+   }
+
+   if(detect_collision(det2,bound_player)){
+    alert('wall-l');
+ }
   });
   coins.forEach(coin => {
     var det = {
@@ -411,7 +446,7 @@ function main() {
           player.location[1] = 0.4;
           theta = 0;
           eye[1] = 1.4;
-        },2*1000);
+        },12*1000);
       }
   }); 
 }

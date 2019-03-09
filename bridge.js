@@ -1,5 +1,5 @@
 function Bridge(gl,x,y,z,num) {
-  var location = [0,0,0]
+  var location = [x,y,z]
   const positionBuffer = gl.createBuffer();
   const indexBuffer = gl.createBuffer();  
 	const colorBuffer = gl.createBuffer();
@@ -17,11 +17,10 @@ function Bridge(gl,x,y,z,num) {
   };
   let draw = (gl,VP,projectionMatrix, programInfo,textures) =>{
     var modelViewMatrix = mat4.create();
-    trans = [location[0]+x,location[0]+y,location[0]+z]
     mat4.multiply(modelViewMatrix,modelViewMatrix,VP);
       mat4.translate(modelViewMatrix,     // destination matrix
         modelViewMatrix,     // matrix to translate
-        trans);  // amount to translate
+        location);  // amount to translate
         // mat4.rotate(modelViewMatrix,
       // modelViewMatrix,
       // rotation_ob,
