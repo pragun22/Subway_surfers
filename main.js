@@ -12,13 +12,15 @@ var trains = [];
 var flying = [];
 var newobs = [];
 var jumpcoins = [];
+var score = 0;
 var superjump = false;
 var isjet = false;
 var theta = 0;
+var train_stand = false;
 alt = [-1.2, 0 ,1.2];
 flying.push(Jet(gl,0,0.8,10));
-// trains.push(Train(gl,0,0,10));  
-boots.push(Shoes(gl,0,1,23));
+trains.push(Train(gl,0,0,20));  
+boots.push(Shoes(gl,0,1,13));
 // bridge.push(Bridge(gl,0,0,24,0.9));
 tracks.push(Basic(gl, 1.2, 0, 0,0.35 ,100.5 ,0.12));
 tracks.push(Basic(gl, -1.2, 0, 0,0.35 ,100.5 ,0.12));
@@ -145,7 +147,7 @@ function main() {
       coins = [];
       for(var i = 0 ; i < 9 ; i++){
         var a = Math.floor(Math.random() * 10);          
-        coins.push(Circle(gl,alt[(i+a)%3],player.location[1]+0.4,player.location[2]+30-i*1.5,0.2));
+        coins.push(Circle(gl,alt[(i+a)%3],0.4,player.location[2]+30-i*1.5,0.2));
       }
         coins.forEach(coin => {
           coin.init();
@@ -176,30 +178,25 @@ function main() {
       flying.forEach(jet => {
         jet.init();
       });
-      setTimeout(()=>{
-        isjet = false;
-        player.location[1] = 0.4;
-        theta = 0;
-        eye[1] = 1.4;
-      },12*1000);
       var then = 0;
-    function render(now) {
-      eye[2]+=speedz;      
-      target[2]+=speedz;
-      player.location[2] +=speedz;
-      Mousetrap.bind(["left", "a"], () => {
-        speedx = 0.05+mag_time;
-        temp = 1.2
-      });
-      Mousetrap.bind(["d", "right"], () => {
-        
-        speedx = -0.05-mag_time;
-        temp = 1.2
-      });
-      Mousetrap.bind(["s"], () => {
+      function render(now) {
+        eye[2]+=speedz;      
+        target[2]+=speedz;
+        player.location[2] +=speedz;
+        Mousetrap.bind(["left", "a"], () => {
+          speedx = 0.05+mag_time;
+          temp = 1.2
+        });
+        Mousetrap.bind(["d", "right"], () => {
+          
+          speedx = -0.05-mag_time;
+          temp = 1.2
+        });
+        Mousetrap.bind(["s"], () => {
         eye[2]-=0.05;
         target[2]-=0.05;
         player.location[2] -= 0.05;
+        alert("your score is"  + String(score));
       });
       Mousetrap.bind(["w", "space"], () => {
         if(isjump==0) {
@@ -221,17 +218,19 @@ function main() {
   let tick = () => {
     
     if(isjump==1){
-      player.location[1]+=speedy;
-      speedy -= 0.002;
-      if(player.location[1] < 0.4 ){
-        isjump = 0;
-        speedy = 0;
-        player.location[1] = 0.4;
-      } 
+      if(train_stand == false){
+        player.location[1]+=speedy;
+        speedy -= 0.002;
+        if(player.location[1] < 0.4 ){
+          isjump = 0;
+          speedy = 0;
+          player.location[1] = 0.4;
+        } 
+      }
     }
     if(isjet){
       player.location[1] = 1.8 + 0.2*Math.cos(theta*Math.PI/180);
-      eye[1] = player.location[1] + 1;
+      eye[1] = player.location[1]+0.1;
       // console.log(player.location[1])
       theta += 1;
     }
@@ -271,7 +270,7 @@ function main() {
     flying.forEach(jet => {
       jet.init();
     });
-
+    
   };
   function drawScene(gl, programInfo, deltaTime) {
     gl.clearColor(0.21, 0.35, 0.42, 0.5);  // Clear to black, fully opaque
@@ -279,65 +278,65 @@ function main() {
     gl.enable(gl.DEPTH_TEST);           // Enable depth testing
     gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
+    
     const fieldOfView = 60 * Math.PI / 180;   // in radians
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     const zNear = 0.1;
     const zFar = 100.0;
     const projectionMatrix = mat4.create();
     mat4.perspective(projectionMatrix,
-                      fieldOfView,
-                      aspect,
-                      zNear,
-                      zFar);
-                      
-    var modelViewMatrix = mat4.create();
-    mat4.lookAt(modelViewMatrix, eye, target, [0, 1, 0]);
-
-    superjump ? tex = [textures.legyel,textures.legbl,textures.legbr] :tex = [textures.legyel,textures.legbl,textures.leggr]
-    walls.forEach(wall => {
-      wall.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.wall);
-    });
-    player.draw(gl, modelViewMatrix,projectionMatrix, programInfo,tex);
-    bridge.forEach(obs => {
-      obs.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.build);
-    });
+      fieldOfView,
+      aspect,
+      zNear,
+      zFar);
+      
+      var modelViewMatrix = mat4.create();
+      mat4.lookAt(modelViewMatrix, eye, target, [0, 1, 0]);
+      
+      superjump ? tex = [textures.legyel,textures.legbl,textures.legbr] :tex = [textures.legyel,textures.legbl,textures.leggr]
+      walls.forEach(wall => {
+        wall.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.wall);
+      });
+      player.draw(gl, modelViewMatrix,projectionMatrix, programInfo,tex);
+      bridge.forEach(obs => {
+        obs.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.build);
+      });
     tracks.forEach(track => {
       track.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.rail);
     });
     obstacle.forEach(obs => {
-       obs.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.hurdle);
+      obs.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.hurdle);
     });
     coins.forEach(coin => {
-       coin.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.coin);
+      coin.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.coin);
     });
     boots.forEach(boot => {
-       boot.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.shoe);
+      boot.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.shoe);
     });
     trains.forEach(train => {
       train.draw(gl, modelViewMatrix, projectionMatrix, programInfo, [textures.tf, textures.ts]);
-   });
-   flying.forEach(jet => {
-    jet.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.jet);
- });
-};
-function detect(){
-  var bound_player = {
-    x : player.location[0]-1/6.0,
-    y : player.location[1]-1.25/6.0,
-    z : player.location[2]-1/6.0,
-    width : 2/6.0,
-    depth : 2/6.0,
+    });
+    flying.forEach(jet => {
+      jet.draw(gl, modelViewMatrix, projectionMatrix, programInfo, textures.jet);
+    });
+  };
+  function detect(){
+    var bound_player = {
+      x : player.location[0]-1/6.0,
+      y : player.location[1]-1.25/6.0,
+      z : player.location[2]-1/6.0,
+      width : 2/6.0,
+      depth : 2/6.0,
     height : 2.5/6.0,
   };
   obstacle.forEach(obs => {
     var det = {
-    x : obs.location[0]-0.25,
-    y : obs.location[1]-0.6,
-    z : obs.location[2]-0.1,
-    width : 0.5,
-    depth : 0.2,
-    height : 1.2,
+      x : obs.location[0]-0.25,
+      y : obs.location[1]-0.6,
+      z : obs.location[2]-0.1,
+      width : 0.5,
+      depth : 0.2,
+      height : 1.2,
     };
     if (detect_collision(det,bound_player)){
       console.log('true with obs');
@@ -353,10 +352,11 @@ function detect(){
       width : 0.4,
       depth : 0.05,
       height : 0.4,
-      };
-      if (detect_collision(det,bound_player)){
-        console.log('true with coins');
-      }
+    };
+    if (detect_collision(det,bound_player)){
+      score += 20;
+      coin.location[2] = 10;
+    }
   });
   boots.forEach(boot => {
     var det = {
@@ -368,46 +368,57 @@ function detect(){
       height : 0.3,
       };
       if (detect_collision(det,bound_player)){
-        console.log('true with boots');
+        superjump = true;
+        setTimeout(()=>{
+          superjump = false;
+        },12*1000);
+        boot.location[2] = 10;
+      }
+    });
+    trains.forEach(train => {
+    var det = {
+      x : train.location[0]-0.3,
+      y : train.location[1]+ 0.6,
+      z : train.location[2]+1,
+      width : 0.6,
+      depth : 3.0,
+      height : 0.4,
+      };
+      if (detect_collision(det,bound_player) && (player.location[1]-0.40)>det.y+0.16){
+        train_stand = true;
+        player.location[1] = 1.5;
+      }
+      else if (detect_collision(det,bound_player)){
+          alert("game ended");
+      }
+      else if(player.location[2] - train.location[2] > 4.1){
+        train_stand = false;
       }
   });
-  trains.forEach(train => {
-    // var det = {
-    //   x : coin.location[0]-0.2,
-    //   y : coin.location[1]-0.2,
-    //   z : coin.location[2],
-    //   width : 0.4,
-    //   depth : 0.05,
-    //   height : 0.4,
-    //   };
-    //   if (detect_collision(det,bound_player)){
-    //     console.log('true with coins');
-    //   }
-  });
   flying.forEach(jet => {
-    // var det = {
-    //   x : coin.location[0]-0.2,
-    //   y : coin.location[1]-0.2,
-    //   z : coin.location[2],
-    //   width : 0.4,
-    //   depth : 0.05,
-    //   height : 0.4,
-    //   };
-    //   if (detect_collision(det,bound_player)){
-    //     console.log('true with coins');
-    //   }
+    var det = {
+      x : jet.location[0]-0.15,
+      y : jet.location[1]-0.17,
+      z : jet.location[2]-0.05,
+      width : 0.3,
+      depth : 0.1,
+      height : 0.34,
+      };
+      if (detect_collision(det,bound_player)){
+        isjet = true;
+        setTimeout(()=>{
+          isjet = false;
+          player.location[1] = 0.4;
+          theta = 0;
+          eye[1] = 1.4;
+        },2*1000);
+      }
   }); 
 }
 function detect_collision(a,b) {
   var x = a.x + a.width >= b.x && b.x + b.width >= a.x?true:false;
   var y = a.y + a.height >= b.y && b.y + b.height >= a.y?true:false;       
   var z = a.z + a.depth >= b.z && b.z + b.depth >= a.z?true:false; 
-  // console.log(x);
-  // console.log("x");
-  // console.log(y);
-  // console.log("y");
-  // console.log(z);
-  // console.log("z");
   return (x && y && z);      
 }
 function initShaderProgram(gl, vsSource, fsSource) {
